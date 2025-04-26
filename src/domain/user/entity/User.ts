@@ -41,12 +41,17 @@ export class User {
     });
   }
 
+  public changeEmail(newEmail: string) {
+    const email = Email.create(newEmail);
+    return this.onChange({ email });
+  }
+
   public deactivate() {
     return this.onChange({ isActive: false });
   }
 
   public activate() {
-    return this.onChange({ isActive: false });
+    return this.onChange({ isActive: true });
   }
 
   public get id() {
