@@ -11,3 +11,9 @@ export function hasSQLInjection(value: string): boolean {
 export function isSafe(value: string): boolean {
   return !isEmpty(value) && !hasSQLInjection(value);
 }
+
+export function ensureSafe(value: string, errorMessage: string): void {
+  if (!isSafe(value)) {
+    throw new Error(errorMessage);
+  }
+}
