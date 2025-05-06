@@ -13,16 +13,23 @@ export type TopicProps = {
   isConcluded: boolean;
 };
 
+// Interface
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+
 export class Topic {
   private constructor(readonly props: TopicProps) {}
 
-  public static create(props: { idJourney: string; topicName: string }) {
+  public static create(props: {
+    idJourney: string;
+    topicName: string;
+    uuidGenerator: UuidGenerator;
+  }) {
     TopicValidator.ensureSafeName(props.topicName);
     TopicValidator.ensureTopicNameHasMinimumLength(props.topicName);
     TopicValidator.ensureTopicNameIsWithinLimit(props.topicName);
 
     return new Topic({
-      id: crypto.randomUUID().toString(),
+      id: props.uuidGenerator.generate(),
       idJourney: props.idJourney,
       topicName: props.topicName,
       createdAt: null,

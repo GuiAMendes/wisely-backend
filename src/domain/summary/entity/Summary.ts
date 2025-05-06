@@ -16,6 +16,9 @@ export type SummaryProps = {
   isActive: boolean;
 };
 
+// Interface
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+
 export class Summary {
   private constructor(readonly props: SummaryProps) {}
 
@@ -23,6 +26,7 @@ export class Summary {
     idTopic: string;
     title: string;
     noteContent: string;
+    uuidGenerator: UuidGenerator;
   }) {
     SummaryValidator.ensureSafeTitle(props.title);
     SummaryValidator.ensureMinimalTitle(props.title);
@@ -31,7 +35,7 @@ export class Summary {
     const note = Note.create(props.noteContent);
 
     return new Summary({
-      id: crypto.randomUUID().toString(),
+      id: props.uuidGenerator.generate(),
       idTopic: props.idTopic,
       title: props.title,
       note,

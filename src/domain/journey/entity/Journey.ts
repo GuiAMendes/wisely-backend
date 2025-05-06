@@ -14,6 +14,9 @@ export type JourneyProps = {
   isActive: boolean;
 };
 
+// Interface
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+
 export class Journey {
   private constructor(readonly props: JourneyProps) {}
 
@@ -21,6 +24,7 @@ export class Journey {
     idDirectory: string;
     journeyName: string;
     typeOfJourney?: JourneyType;
+    uuidGenerator: UuidGenerator;
   }) {
     JourneyValidator.ensureSafeName(props.journeyName);
     JourneyValidator.ensureJourneyNameHasMinimumLength(props.journeyName);
@@ -29,7 +33,7 @@ export class Journey {
     const typeJourney = TypeOfJourney.create(props.typeOfJourney || "free");
 
     return new Journey({
-      id: crypto.randomUUID().toString(),
+      id: props.uuidGenerator.generate(),
       idDirectory: props.idDirectory,
       journeyName: props.journeyName,
       typeOfJourney: typeJourney.labelType,

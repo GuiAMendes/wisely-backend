@@ -13,20 +13,24 @@ export type UserProps = {
   isActive: boolean;
 };
 
+// Interface
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+
 export class User {
   private constructor(readonly props: UserProps) {}
 
   public static async create(
     username: string,
     email: string,
-    password: string
+    password: string,
+    uuidGenerator: UuidGenerator
   ) {
     UserValidator.ensureSafeName(username);
     const userEmail: Email = Email.create(email);
     const userPassword = await Password.create(password);
 
     return new User({
-      id: crypto.randomUUID().toString(),
+      id: uuidGenerator.generate(),
       username,
       email: userEmail,
       password: userPassword,
