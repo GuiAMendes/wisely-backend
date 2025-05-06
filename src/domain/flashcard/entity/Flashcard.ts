@@ -13,27 +13,37 @@ export interface FlashcardProps {
   isActive: boolean;
 }
 
+// Interface
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+
 export class Flashcard {
-  private constructor(readonly props: FlashcardProps) {}
+  private constructor(
+    readonly props: FlashcardProps,
+    private readonly uuidGenerator: UuidGenerator
+  ) {}
 
   public static create(props: {
     idTopic: string;
     questionContent: string;
     responseContent: string;
+    uuidGenerator: UuidGenerator;
   }) {
     const question = Question.create(props.questionContent);
     const response = Response.create(props.responseContent);
 
-    return new Flashcard({
-      id: crypto.randomUUID().toString(),
-      topicId: props.idTopic,
-      question,
-      response,
-      createdAt: null,
-      updatedAt: null,
-      completedAt: null,
-      isActive: true,
-    });
+    return new Flashcard(
+      {
+        id: props.uuidGenerator.generate(),
+        topicId: props.idTopic,
+        question,
+        response,
+        createdAt: null,
+        updatedAt: null,
+        completedAt: null,
+        isActive: true,
+      },
+      props.uuidGenerator
+    );
   }
 
   public edit(questionContent: string, responseContent: string) {
@@ -41,6 +51,7 @@ export class Flashcard {
       idTopic: this.topicId,
       questionContent,
       responseContent,
+      uuidGenerator: this.uuidGenerator,
     });
   }
 
