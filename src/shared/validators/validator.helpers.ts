@@ -17,3 +17,21 @@ export function ensureSafe(value: string, errorMessage: string): void {
     throw new Error(errorMessage);
   }
 }
+
+export function ensureMinimalLenght(
+  name: string,
+  minLenght: number,
+  message: string
+) {
+  if (isEmpty(name) || name.length < minLenght) {
+    throw new Error(message);
+  }
+}
+
+export function ensureNameWithinLimit(
+  name: string,
+  maxLenght: number,
+  message: string
+) {
+  if (isEmpty(name) || name.length > maxLenght) throw new Error(message);
+}
