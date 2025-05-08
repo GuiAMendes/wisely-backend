@@ -20,7 +20,7 @@ jobs:
 
       - name: Add upstream and fetch
         run: |
-          git remote add upstream https://github.com/GuilhermeAMendes/wisely-backend
+          git remote add upstream https://github.com/GuilhermeAMendes/wisely-backend.git
           git fetch upstream
 
       - name: Merge upstream changes
