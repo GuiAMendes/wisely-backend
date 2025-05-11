@@ -13,6 +13,9 @@ export type DirectoryProps = {
   isTemplate: boolean;
 };
 
+// Interface
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+
 export class Directory {
   private constructor(readonly props: DirectoryProps) {}
 
@@ -20,11 +23,12 @@ export class Directory {
     idUser: string;
     directoryName: string;
     isTemplate?: boolean;
+    uuidGenerator: UuidGenerator;
   }) {
     DirectoryValidator.ensureSafeName(props.directoryName);
 
     return new Directory({
-      id: crypto.randomUUID().toString(),
+      id: props.uuidGenerator.generate(),
       idUser: props.idUser,
       directoryName: props.directoryName,
       createdAt: null,
