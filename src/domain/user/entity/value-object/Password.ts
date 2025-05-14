@@ -1,6 +1,3 @@
-// External libraries
-import bcrypt from "bcrypt";
-
 // Validators
 import { PasswordValidator } from "../../validator/password.validator";
 
@@ -12,15 +9,18 @@ export type PasswordProps = {
   hashPassword: string;
 };
 
+// Interfaces
+import { Cryptation } from "../../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
+
 export class Password {
   private constructor(readonly props: PasswordProps) {}
 
-  public static async create(plainText: string) {
+  public static async create(plainText: string, cryptation: Cryptation) {
     PasswordValidator.ensureSafeContent(plainText);
     PasswordValidator.ensureRequiredCharacters(plainText);
     PasswordValidator.ensureMinimalLenght(plainText);
 
-    const encryption = await Password.generateHash(plainText);
+    const encryption = await cryptation.hash(plainText, QUANTITY_OF_ROUNDS);
 
     return new Password({
       hashPassword: encryption,
@@ -33,12 +33,11 @@ export class Password {
     });
   }
 
-  private static async generateHash(plainText: string): Promise<string> {
-    return bcrypt.hash(plainText, QUANTITY_OF_ROUNDS);
-  }
-
-  public async compare(plainText: string): Promise<boolean> {
-    return await bcrypt.compare(plainText, this.props.hashPassword);
+  public async compare(
+    plainText: string,
+    cryptation: Cryptation
+  ): Promise<boolean> {
+    return cryptation.compare(plainText, this.props.hashPassword);
   }
 
   protected get hashPassword() {
