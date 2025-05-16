@@ -77,6 +77,6 @@ export class User {
   }
 
   public get passwordHash() {
-    return this.props.password["hashPassword"];
+    return this.props.password.hash;
   }
 }
