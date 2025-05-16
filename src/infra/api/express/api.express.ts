@@ -2,8 +2,8 @@
 import express, { Express } from "express";
 
 // Interfaces
-import { API } from "../interfaces";
-import { Route } from "./routes";
+import type { Route } from "./routes";
+import type { API } from "../interfaces";
 
 export class ApiExpress implements API {
   private app: Express;
