@@ -17,7 +17,7 @@ export type SummaryProps = {
 };
 
 // Interface
-import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
 
 export class Summary {
   private constructor(readonly props: SummaryProps) {}
