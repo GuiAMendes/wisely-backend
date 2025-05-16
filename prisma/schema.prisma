@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -12,4 +6,166 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model directory {
+  id_user        String           @db.Char(36)
+  id             String           @id @db.Char(36)
+  directory_name String           @db.VarChar(100)
+  created_at     DateTime?        @default(now()) @db.Timestamp(0)
+  updated_at     DateTime?        @db.Timestamp(0)
+  is_completed   Boolean?         @default(false)
+  is_active      Boolean?         @default(true)
+  is_template    Boolean?         @default(false)
+  user           user             @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_directory")
+  journey        journey[]
+  share_template share_template[]
+
+  @@index([directory_name], map: "idx_directory_name")
+  @@index([id_user], map: "idx_directory_user")
+}
+
+model file_model {
+  id          String    @id @db.Char(36)
+  id_topic    String    @db.Char(36)
+  file_name   String    @db.VarChar(100)
+  file_type   String    @db.VarChar(255)
+  file_path   String    @db.LongText
+  upload_date DateTime? @default(now()) @db.Timestamp(0)
+  is_active   Boolean?  @default(true)
+  topic       topic     @relation(fields: [id_topic], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_file_topic")
+
+  @@index([file_name], map: "idx_file_name")
+  @@index([id_topic], map: "idx_file_topic")
+  @@index([file_type], map: "idx_file_type")
+}
+
+model flashcard {
+  id           String    @id @db.Char(36)
+  id_topic     String    @db.Char(36)
+  question     String    @db.Text
+  response     String    @db.Text
+  created_at   DateTime? @default(now()) @db.Timestamp(0)
+  updated_at   DateTime? @db.Timestamp(0)
+  completed_at DateTime? @db.Timestamp(0)
+  is_active    Boolean?  @default(true)
+  topic        topic     @relation(fields: [id_topic], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_topic_flashcard")
+
+  @@index([id_topic], map: "idx_flashcard_topic")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model journey {
+  id              String     @id @db.Char(36)
+  id_directory    String     @db.Char(36)
+  journey_name    String     @db.VarChar(100)
+  type_of_journey String?    @default("free") @db.VarChar(4)
+  created_at      DateTime?  @default(now()) @db.Timestamp(0)
+  updated_at      DateTime?  @db.Timestamp(0)
+  is_completed    Boolean?   @default(false)
+  is_active       Boolean?   @default(true)
+  directory       directory  @relation(fields: [id_directory], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_directory_journey")
+  progress        progress[]
+  topic           topic[]
+
+  @@index([id_directory], map: "idx_journey_directory")
+  @@index([journey_name], map: "idx_journey_name")
+}
+
+model logging {
+  id         String    @id @db.Char(36)
+  id_user    String    @db.Char(36)
+  operation  String    @db.VarChar(255)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  user       user      @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_logging_user")
+
+  @@index([id_user], map: "fk_logging_user")
+}
+
+model progress {
+  id               String    @id @db.Char(36)
+  id_journey       String    @db.Char(36)
+  completed_topics Int?      @default(0)
+  total_topics     Int
+  updated_at       DateTime? @default(now()) @db.Timestamp(0)
+  is_active        Boolean?  @default(true)
+  journey          journey   @relation(fields: [id_journey], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_progress_journey")
+
+  @@index([id_journey], map: "fk_progress_journey")
+}
+
+model settings {
+  id          String  @unique(map: "id") @db.Char(36)
+  id_user     String  @db.Char(36)
+  colorSchema String? @default("#ffffff") @db.Char(16)
+  user        user    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_settings_user")
+
+  @@index([id_user], map: "fk_settings_user")
+  @@index([colorSchema], map: "idx_colorSchema")
+}
+
+model share_template {
+  id                                    String    @id @db.Char(36)
+  id_owner                              String    @db.Char(36)
+  id_receiver                           String    @db.Char(36)
+  id_directory                          String    @db.Char(36)
+  created_at                            DateTime? @default(now()) @db.Timestamp(0)
+  is_active                             Boolean?  @default(true)
+  response                              Boolean?  @default(false)
+  directory                             directory @relation(fields: [id_directory], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_share_directory")
+  user_share_template_id_ownerTouser    user      @relation("share_template_id_ownerTouser", fields: [id_owner], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_share_owner")
+  user_share_template_id_receiverTouser user      @relation("share_template_id_receiverTouser", fields: [id_receiver], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_share_receiver")
+
+  @@index([id_directory], map: "fk_share_directory")
+  @@index([id_owner], map: "fk_share_owner")
+  @@index([id_receiver], map: "fk_share_receiver")
+}
+
+model summary {
+  id           String    @id @db.Char(36)
+  id_topic     String    @db.Char(36)
+  title        String    @db.VarChar(100)
+  note         String    @db.LongText
+  created_at   DateTime? @default(now()) @db.Timestamp(0)
+  updated_at   DateTime? @db.Timestamp(0)
+  completed_at DateTime? @db.Timestamp(0)
+  is_active    Boolean?  @default(true)
+  topic        topic     @relation(fields: [id_topic], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_topic_summary")
+
+  @@index([title], map: "idx_summary_title")
+  @@index([id_topic], map: "idx_summary_topic")
+}
+
+model topic {
+  id           String       @id @db.Char(36)
+  id_journey   String       @db.Char(36)
+  topic_name   String       @db.VarChar(100)
+  created_at   DateTime?    @default(now()) @db.Timestamp(0)
+  updated_at   DateTime?    @db.Timestamp(0)
+  completed_at DateTime?    @db.Timestamp(0)
+  is_active    Boolean?     @default(true)
+  is_concluded Boolean?     @default(false)
+  file_model   file_model[]
+  flashcard    flashcard[]
+  summary      summary[]
+  journey      journey      @relation(fields: [id_journey], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_journey_topic")
+
+  @@index([id_journey], map: "idx_topic_journey")
+  @@index([topic_name], map: "idx_topic_name")
+}
+
+model user {
+  id                                              String           @id @db.Char(36)
+  username                                        String           @db.VarChar(100)
+  email                                           String           @unique(map: "email") @db.VarChar(100)
+  user_password                                   String           @db.VarChar(100)
+  is_active                                       Boolean?         @default(true)
+  directory                                       directory[]
+  logging                                         logging[]
+  settings                                        settings[]
+  share_template_share_template_id_ownerTouser    share_template[] @relation("share_template_id_ownerTouser")
+  share_template_share_template_id_receiverTouser share_template[] @relation("share_template_id_receiverTouser")
+
+  @@index([email, user_password], map: "idx_credentials")
+  @@index([email], map: "idx_email")
 }

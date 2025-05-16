@@ -124,6 +124,7 @@ web_modules/
 
 # Prisma
 prisma/.env
+generated
 .env.local
 .env.development
 .env.test
