@@ -75,4 +75,8 @@ export class User {
   public get isActive() {
     return this.props.isActive;
   }
+
+  public get passwordHash() {
+    return this.props.password["hashPassword"];
+  }
 }
