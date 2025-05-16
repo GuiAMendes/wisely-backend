@@ -14,7 +14,8 @@ export type UserProps = {
 };
 
 // Interface
-import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
+import { Cryptation } from "../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
 
 export class User {
   private constructor(readonly props: UserProps) {}
@@ -23,11 +24,12 @@ export class User {
     username: string,
     email: string,
     password: string,
-    uuidGenerator: UuidGenerator
+    uuidGenerator: UuidGenerator,
+    cryptationService: Cryptation
   ) {
     UserValidator.ensureSafeName(username);
     const userEmail: Email = Email.create(email);
-    const userPassword = await Password.create(password);
+    const userPassword = await Password.create(password, cryptationService);
 
     return new User({
       id: uuidGenerator.generate(),
