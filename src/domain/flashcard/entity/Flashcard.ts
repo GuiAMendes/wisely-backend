@@ -55,6 +55,24 @@ export class Flashcard {
     });
   }
 
+  private onChange(updated: Partial<FlashcardProps>) {
+    return new Flashcard(
+      {
+        ...this.props,
+        ...updated,
+      },
+      this.uuidGenerator
+    );
+  }
+
+  public deactivate() {
+    return this.onChange({ isActive: false });
+  }
+
+  public activate() {
+    return this.onChange({ isActive: true });
+  }
+
   public get id() {
     return this.props.id;
   }
