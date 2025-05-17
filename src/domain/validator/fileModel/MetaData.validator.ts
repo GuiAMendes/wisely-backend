@@ -2,7 +2,8 @@
 import { isEmpty, isSafe } from "../../../shared/validators";
 
 // Constants
-import { BASE64_REGEX, MAX_BASE64_SIZE } from "../constants";
+import { BASE64_REGEX } from "../../constants/fileModel/base64Regex";
+import { MAX_BASE64_SIZE } from "../../constants/fileModel/fileModel.constants";
 
 export class MetaDataValidator {
   public static ensureBase64Valid(content: string) {

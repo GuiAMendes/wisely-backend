@@ -1,5 +1,5 @@
 // Entity
-import { User } from "../entity";
+import { User } from "../../entity/user/User";
 
 export interface UserGateway {
   create(user: User): Promise<User>;

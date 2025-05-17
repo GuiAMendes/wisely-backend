@@ -9,7 +9,7 @@ import {
 import {
   QUESTION_INTERVAL_LENGTH,
   RESPONSE_INTERVAL_LENGTH,
-} from "../constants";
+} from "../../constants/flashcard/flashcard.constants";
 
 export class FlashcardValidator {
   public static ensureValidQuestion(value: string) {
