@@ -1,5 +1,5 @@
 // Constants
-import { TYPE_OF_JOURNEY } from "../constants";
+import { TYPE_OF_JOURNEY } from "../../constants/journey/journey.constants";
 
 export class TypeOfJourneyValidator {
   public static ensureValidType(type: string) {

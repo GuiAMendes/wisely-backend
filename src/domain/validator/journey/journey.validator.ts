@@ -6,7 +6,7 @@ import {
 } from "../../../shared/validators/validator.helpers";
 
 // Constants
-import { NAME_LENGTH } from "../constants";
+import { NAME_LENGTH } from "../../constants/journey/journey.constants";
 
 export class JourneyValidator {
   static ensureSafeName(name: string) {

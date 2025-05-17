@@ -1,5 +1,5 @@
 // Entity
-import { Journey } from "../entity";
+import { Journey } from "../../entity/journey/Journey";
 
 export interface JourneyGateway {
   create(journey: Journey): Promise<Journey>;

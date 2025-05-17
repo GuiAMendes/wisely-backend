@@ -1,5 +1,5 @@
 // Validators
-import { TypeOfJourneyValidator } from "../../validator/typeOfJourney.validator";
+import { TypeOfJourneyValidator } from "../../validator/journey/typeOfJourney.validator";
 
 // Types
 export type JourneyType = "free" | "full";

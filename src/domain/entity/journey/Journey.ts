@@ -1,6 +1,9 @@
 // Validators
-import { JourneyValidator } from "../validator/journey.validator";
-import { JourneyType, TypeOfJourney } from "./value-object/TypeOfJourney";
+import { JourneyValidator } from "../../validator/journey/journey.validator";
+import {
+  JourneyType,
+  TypeOfJourney,
+} from "../../value-object/journey/TypeOfJourney";
 
 // Types
 export type JourneyProps = {
