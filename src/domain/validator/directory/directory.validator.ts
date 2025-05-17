@@ -1,5 +1,5 @@
 // Validators
-import { ensureSafe } from "../../../../shared/validators/index";
+import { ensureSafe } from "../../../shared/validators";
 
 export class DirectoryValidator {
   public static ensureSafeName(name: string) {

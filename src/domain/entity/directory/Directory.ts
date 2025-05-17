@@ -1,5 +1,5 @@
 // Validators
-import { DirectoryValidator } from "./validator/directory.validator";
+import { DirectoryValidator } from "../../validator/directory/directory.validator";
 
 // Types
 export type DirectoryProps = {

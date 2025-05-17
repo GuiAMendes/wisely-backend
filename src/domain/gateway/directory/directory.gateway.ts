@@ -1,5 +1,5 @@
 // Entity
-import { Directory } from "../entity";
+import { Directory } from "../../entity/directory/Directory";
 
 export interface DirectoryGateway {
   create(directory: Directory): Promise<Directory>;
