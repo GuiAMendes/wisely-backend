@@ -53,7 +53,6 @@ export class Progress {
     return new Progress({
       ...this.props,
       completedTopics: count,
-      updatedAt: new Date(),
     });
   }
 
@@ -61,7 +60,6 @@ export class Progress {
     return new Progress({
       ...this.props,
       isActive: false,
-      updatedAt: new Date(),
     });
   }
 
@@ -69,7 +67,6 @@ export class Progress {
     return new Progress({
       ...this.props,
       isActive: true,
-      updatedAt: new Date(),
     });
   }
 
