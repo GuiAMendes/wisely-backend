@@ -15,7 +15,7 @@ export type JourneyProps = {
 };
 
 // Interface
-import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
 
 export class Journey {
   private constructor(readonly props: JourneyProps) {}

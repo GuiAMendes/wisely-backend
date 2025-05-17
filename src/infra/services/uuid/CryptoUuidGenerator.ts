@@ -1,4 +1,4 @@
-import { UuidGenerator } from "./interfaces/uuidGenerator.interfaces";
+import { UuidGenerator } from "./interfaces/UuidGenerator.interfaces";
 
 export class CryptoUuidGenerator implements UuidGenerator {
   generate(): string {

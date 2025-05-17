@@ -40,7 +40,7 @@ export class Password {
     return cryptation.compare(plainText, this.props.hashPassword);
   }
 
-  protected get hashPassword() {
+  public get hash() {
     return this.props.hashPassword;
   }
 }

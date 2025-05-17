@@ -12,7 +12,7 @@ export interface ProgressProps {
 }
 
 // Interfaces
-import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
 
 export class Progress {
   private constructor(readonly props: ProgressProps) {}

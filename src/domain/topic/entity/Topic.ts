@@ -14,7 +14,7 @@ export type TopicProps = {
 };
 
 // Interface
-import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
 
 export class Topic {
   private constructor(readonly props: TopicProps) {}

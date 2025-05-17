@@ -13,7 +13,7 @@ export type FileModelProps = {
 };
 
 // Interfaces
-import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
 
 export class FileModel {
   private constructor(readonly props: FileModelProps) {}

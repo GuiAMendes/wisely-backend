@@ -14,7 +14,7 @@ export interface FlashcardProps {
 }
 
 // Interface
-import { UuidGenerator } from "../../../infra/services/uuid/interfaces/uuidGenerator.interfaces";
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
 
 export class Flashcard {
   private constructor(
