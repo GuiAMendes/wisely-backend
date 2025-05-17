@@ -1,8 +1,9 @@
 // Interfaces
-import { Prisma } from "../../infra/services/orm/prisma/Prisma";
-import { Cryptation } from "../../infra/services/cryptation/interfaces/Cryptation.interfaces";
-import { GenerateTokenProvider } from "../../infra/provider/token/GenerateTokenProvider";
-import { TokenProvider } from "../../infra/services/token/interfaces/token.interfaces";
+import { GenerateTokenProvider } from "../../../infra/provider/token/GenerateTokenProvider";
+import { Cryptation } from "../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
+import { Prisma } from "../../../infra/services/orm/prisma/Prisma";
+import { TokenProvider } from "../../../infra/services/token/interfaces/token.interfaces";
+import { UnauthorizedError } from "../../../presentation/errors/UnauthorizedError"; // importe corretamente
 
 interface AuthRequest {
   email: string;
@@ -19,19 +20,21 @@ export class AuthUserUseCase {
       },
     });
 
-    if (!userAlreadyExist) throw new Error("User or password incorrect");
+    if (!userAlreadyExist)
+      throw new UnauthorizedError("User or password incorrect");
 
     const passwordMatch = await cryptation.compare(
       password,
       userAlreadyExist.user_password
     );
 
-    if (!passwordMatch) throw new Error("User or password incorrect");
+    if (!passwordMatch)
+      throw new UnauthorizedError("User or password incorrect");
 
     const generateToken = new GenerateTokenProvider(tokenGenerator);
 
     const token = generateToken.execute({ userId: userAlreadyExist.id });
 
-    return { token: token };
+    return { token };
   }
 }
