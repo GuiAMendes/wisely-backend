@@ -1,5 +1,6 @@
 // Value-Object
-import { Question, Response } from "./value-object";
+import { Question } from "../../value-object/flashcard/Question";
+import { Response } from "../../value-object/flashcard/Response";
 
 // Types
 export interface FlashcardProps {

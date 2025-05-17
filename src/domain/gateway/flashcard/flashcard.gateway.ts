@@ -1,5 +1,5 @@
 // Entity
-import { Flashcard } from "../entity";
+import { Flashcard } from "../../entity/flashcard/Flashcard";
 
 export interface FlashcardGateway {
   create(Flashcard: Flashcard): Promise<Flashcard>;

@@ -1,5 +1,5 @@
 // Validator
-import { FlashcardValidator } from "../../validator/flashcard.validator";
+import { FlashcardValidator } from "../../validator/flashcard/flashcard.validator";
 
 // Types
 export interface ResponseProps {
