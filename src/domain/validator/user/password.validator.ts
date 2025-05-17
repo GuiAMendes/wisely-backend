@@ -2,7 +2,7 @@
 import { isEmpty, isSafe } from "../../../shared/validators/index";
 
 // Constants
-import { MINIMAL_LENGHT } from "../constants/password.constants";
+import { MINIMAL_LENGHT } from "../../constants/user/password.constants";
 
 export class PasswordValidator {
   public static ensureSafeContent(plaintext: string) {

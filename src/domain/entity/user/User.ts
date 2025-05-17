@@ -1,8 +1,9 @@
 // Value Objects
-import { Email, Password } from "./value-object/index";
+import { Email } from "../../value-object/user/Email";
+import { Password } from "../../value-object/user/Password";
 
 // Validators
-import { UserValidator } from "../validator";
+import { UserValidator } from "../../validator/user";
 
 // Types
 export type UserProps = {

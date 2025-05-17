@@ -1,5 +1,5 @@
 // Validators
-import { EmailValidator } from "../../validator";
+import { EmailValidator } from "../../validator/user";
 
 // Types
 export type EmailProps = {

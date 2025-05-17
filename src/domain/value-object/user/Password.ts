@@ -1,8 +1,8 @@
 // Validators
-import { PasswordValidator } from "../../validator/password.validator";
+import { PasswordValidator } from "../../validator/user";
 
 // Constants
-import { QUANTITY_OF_ROUNDS } from "../../constants/password.constants";
+import { QUANTITY_OF_ROUNDS } from "../../constants/user/password.constants";
 
 // Types
 export type PasswordProps = {
@@ -10,7 +10,7 @@ export type PasswordProps = {
 };
 
 // Interfaces
-import { Cryptation } from "../../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
+import { Cryptation } from "../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
 
 export class Password {
   private constructor(readonly props: PasswordProps) {}

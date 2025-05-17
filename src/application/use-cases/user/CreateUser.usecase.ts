@@ -1,5 +1,5 @@
 // Entity
-import { User } from "../../../domain/user";
+import { User } from "../../../domain/entity/user/User";
 
 // Interfaces
 import { Cryptation } from "../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
