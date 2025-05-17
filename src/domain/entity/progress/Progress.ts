@@ -1,5 +1,5 @@
 // Validator
-import { ProgressValidator } from "../validator/index";
+import { ProgressValidator } from "../../validator/progress/progress.validator";
 
 // Types
 export interface ProgressProps {

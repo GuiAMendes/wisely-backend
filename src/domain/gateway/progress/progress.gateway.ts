@@ -1,5 +1,5 @@
 // Entity
-import { Progress } from "../entity";
+import { Progress } from "../../entity/progress/Progress";
 
 export interface ProgressGateway {
   create(progress: Progress): Promise<Progress>;
