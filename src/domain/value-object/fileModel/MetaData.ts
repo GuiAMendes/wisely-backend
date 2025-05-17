@@ -1,5 +1,5 @@
 // Validator
-import { MetaDataValidator } from "../../validator/MetaData.validator";
+import { MetaDataValidator } from "../../validator/fileModel/MetaData.validator";
 
 // Types
 export interface MetaDataProps {

@@ -1,5 +1,5 @@
 // Value Object
-import { MetaData } from "./value-object/MetaData";
+import { MetaData } from "../../value-object/fileModel/MetaData";
 
 // Types
 export type FileModelProps = {

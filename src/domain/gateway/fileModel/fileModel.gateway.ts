@@ -1,5 +1,5 @@
 // Entity
-import { FileModel } from "../entity";
+import { FileModel } from "../../entity/fileModel/FileModel";
 
 export interface FileModelGateway {
   create(FileModel: FileModel): Promise<FileModel>;
