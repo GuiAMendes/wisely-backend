@@ -6,7 +6,7 @@ import {
 } from "../../../shared/validators/validator.helpers";
 
 // Constants
-import { SUMMARY_TITLE_LENGTH } from "../constants/summary.constants";
+import { SUMMARY_TITLE_LENGTH } from "../../constants/summary/summary.constants";
 
 export class SummaryValidator {
   static ensureSafeTitle(title: string) {

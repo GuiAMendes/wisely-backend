@@ -1,5 +1,5 @@
 // Entity
-import { Summary } from "../entity";
+import { Summary } from "../../entity/summary/Summary";
 
 export interface SummaryGateway {
   create(Summary: Summary): Promise<Summary>;

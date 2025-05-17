@@ -1,8 +1,8 @@
 // Validator
-import { SummaryValidator } from "../validator/summary.validator";
+import { SummaryValidator } from "../../validator/summary/summary.validator";
 
 // Value-Object
-import { Note } from "./value-object/Note";
+import { Note } from "../../value-object/summary/Note";
 
 // Types
 export type SummaryProps = {

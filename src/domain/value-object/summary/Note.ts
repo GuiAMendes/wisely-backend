@@ -1,5 +1,5 @@
 // Validator
-import { NoteValidator } from "../../validator/note.validator";
+import { NoteValidator } from "../../validator/summary/note.validator";
 
 // Types
 export interface NoteProps {
