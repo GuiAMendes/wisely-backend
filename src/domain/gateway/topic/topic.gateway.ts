@@ -1,5 +1,5 @@
 // Entity
-import { Topic } from "../entity";
+import { Topic } from "../../entity/topic/Topic";
 
 export interface TopicGateway {
   create(topic: Topic): Promise<Topic>;

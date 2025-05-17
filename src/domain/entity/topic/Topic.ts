@@ -1,5 +1,5 @@
 // Validator
-import { TopicValidator } from "../validator";
+import { TopicValidator } from "../../validator/topic/topic.validator";
 
 // Types
 export type TopicProps = {

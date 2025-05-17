@@ -6,7 +6,7 @@ import {
 } from "../../../shared/validators/validator.helpers";
 
 // Constants
-import { TOPIC_NAME_LENGTH } from "../constants";
+import { TOPIC_NAME_LENGTH } from "../../constants/topic/topic.constants";
 
 export class TopicValidator {
   static ensureSafeName(name: string) {
