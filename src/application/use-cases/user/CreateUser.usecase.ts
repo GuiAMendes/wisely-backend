@@ -1,12 +1,12 @@
 // Entity
-import { User } from "../../domain/user";
+import { User } from "../../../domain/user";
 
 // Interfaces
-import { Cryptation } from "../../infra/services/cryptation/interfaces/Cryptation.interfaces";
-import { UuidGenerator } from "../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
+import { Cryptation } from "../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
+import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
 
 // Service
-import { Prisma } from "../../infra/services/orm/prisma/Prisma";
+import { Prisma } from "../../../infra/services/orm/prisma/Prisma";
 
 // DTO
 interface CreateUserUseCaseRequest {

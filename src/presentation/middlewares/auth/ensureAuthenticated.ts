@@ -2,7 +2,7 @@
 import { NextFunction, Request, Response } from "express";
 
 // Interfaces
-import { TokenProvider } from "../../infra/services/token/interfaces/token.interfaces";
+import { TokenProvider } from "../../../infra/services/token/interfaces/token.interfaces";
 
 // Constants
 import { SECRET_KEY } from "./constants.ts/auth.constants";

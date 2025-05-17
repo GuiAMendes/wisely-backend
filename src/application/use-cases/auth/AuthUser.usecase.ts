@@ -1,7 +1,7 @@
 // Interfaces
 import { Prisma } from "../../infra/services/orm/prisma/Prisma";
 import { Cryptation } from "../../infra/services/cryptation/interfaces/Cryptation.interfaces";
-import { GenerateTokenProvider } from "../../provider/token/GenerateTokenProvider";
+import { GenerateTokenProvider } from "../../infra/provider/token/GenerateTokenProvider";
 import { TokenProvider } from "../../infra/services/token/interfaces/token.interfaces";
 
 interface AuthRequest {

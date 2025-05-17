@@ -3,11 +3,11 @@ interface TokenRequest {
   userId: string;
 }
 
-import { TokenProvider } from "../../infra/services/token/interfaces/token.interfaces";
+import { TokenProvider } from "../../services/token/interfaces/token.interfaces";
 
 // Constants
 import { EXPIRES } from "./constants.ts/token.constants";
-import { SECRET_KEY } from "../../middlewares/auth/constants.ts/auth.constants";
+import { SECRET_KEY } from "../../../presentation/middlewares/auth/constants.ts/auth.constants";
 
 export class GenerateTokenProvider {
   constructor(private tokenProvider: TokenProvider) {}
