@@ -1,6 +1,9 @@
-export class UnauthorizedError extends Error {
+// Class
+import { ApplicationError } from "../../shared/error/ApplicationError";
+
+export class UnauthorizedError extends ApplicationError {
   constructor(message = "Unauthorized") {
-    super(message);
+    super(message, 401);
     this.name = "UnauthorizedError";
   }
 }
