@@ -41,6 +41,16 @@ export class User {
     });
   }
 
+  public static restore(props: UserProps) {
+    return new User({
+      id: props.id,
+      username: props.username,
+      email: props.email,
+      password: props.password,
+      isActive: props.isActive,
+    });
+  }
+
   private onChange(updated: Partial<UserProps>) {
     return new User({
       ...this.props,
