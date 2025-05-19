@@ -11,9 +11,7 @@ export const HttpMethod = {
 } as const;
 
 export interface Route {
-  getMiddlewares(): Array<
-    (req: Request, res: Response, next: NextFunction) => void
-  >;
+  getMiddlewares?(): (req: Request, res: Response, next: NextFunction) => void;
   getHandler(): (req: Request, res: Response) => Promise<void>;
   getPath(): string;
   getMethod(): HttpMethod;
