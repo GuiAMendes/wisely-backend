@@ -1,40 +1,51 @@
 // Interfaces
+import { UserGateway } from "../../../domain/gateway/user/user.gateway";
 import { GenerateTokenProvider } from "../../../infra/provider/token/GenerateTokenProvider";
-import { Cryptation } from "../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
-import { Prisma } from "../../../infra/services/orm/prisma/Prisma";
-import { TokenProvider } from "../../../infra/services/token/interfaces/token.interfaces";
-import { UnauthorizedError } from "../../../presentation/errors/UnauthorizedError"; // importe corretamente
+import { UnauthorizedError } from "../../../presentation/errors/UnauthorizedError";
+import { Usecase } from "../interface/usecase.interface";
 
-interface AuthRequest {
-  email: string;
-  password: string;
-  cryptation: Cryptation;
-  tokenGenerator: TokenProvider;
-}
+// DTOS
+import {
+  AuthUserUseCaseInputDTO,
+  AuthUserUsecaseOutputDTO,
+} from "../../../presentation/dtos/auth/usecaseDTO";
 
-export class AuthUserUseCase {
-  async execute({ password, email, cryptation, tokenGenerator }: AuthRequest) {
-    const userAlreadyExist = await Prisma.getInstance().user.findFirst({
-      where: {
-        email,
-      },
-    });
+export class AuthUserUseCase
+  implements Usecase<AuthUserUseCaseInputDTO, AuthUserUsecaseOutputDTO>
+{
+  constructor(
+    private readonly userGateway: UserGateway,
+    private readonly tokenGenerator: GenerateTokenProvider
+  ) {}
+
+  public static create(
+    userGateway: UserGateway,
+    tokenGenerator: GenerateTokenProvider
+  ) {
+    return new AuthUserUseCase(userGateway, tokenGenerator);
+  }
+
+  async execute({
+    password,
+    email,
+    cryptation,
+  }: AuthUserUseCaseInputDTO): Promise<AuthUserUsecaseOutputDTO> {
+    const userAlreadyExist = await this.userGateway.findByEmail(email);
 
     if (!userAlreadyExist)
       throw new UnauthorizedError("User or password incorrect");
 
     const passwordMatch = await cryptation.compare(
       password,
-      userAlreadyExist.user_password
+      userAlreadyExist.passwordHash
     );
 
     if (!passwordMatch)
       throw new UnauthorizedError("User or password incorrect");
+    const output = await this.tokenGenerator.execute({
+      userId: userAlreadyExist.id,
+    });
 
-    const generateToken = new GenerateTokenProvider(tokenGenerator);
-
-    const token = generateToken.execute({ userId: userAlreadyExist.id });
-
-    return { token };
+    return { token: output };
   }
 }
