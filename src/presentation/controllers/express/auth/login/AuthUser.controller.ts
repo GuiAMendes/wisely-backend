@@ -5,18 +5,18 @@ import { Request, Response } from "express";
 import { AuthUserUseCase } from "../../../../../application/use-cases/auth/login/AuthUser.usecase";
 
 // Interfaces
-import { Cryptation } from "../../../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type { Cryptation } from "../../../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
 
 // Presenter
 import { presenter } from "./AuthUser.presenter";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
-import { Email } from "../../../../../domain/value-object/user/Email";
-import { PasswordValidator } from "../../../../../domain/validator/user";
-import { Password } from "../../../../../domain/value-object/user/Password";
 
 export class AuthUserController implements Route {
   private constructor(
@@ -45,11 +45,7 @@ export class AuthUserController implements Route {
     return async (request: Request, response: Response) => {
       const { email, password } = request.body;
 
-      const checkEmail = Email.create(email);
-
-      const checkPassword = Password.create(password, this.cryptationService);
-
-      if (!checkEmail || !checkPassword) {
+      if (!email || !password) {
         response.status(400).json({ error: "Missing email or password" });
         return;
       }

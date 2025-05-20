@@ -48,8 +48,7 @@ export class UserRepositoryPrisma implements UserGateway {
         },
       });
 
-      if (!dbUser)
-        throw new EntityNotFoundError(`User with id ${id} not found`);
+      if (!dbUser) return null;
 
       const user = User.restore({
         id: dbUser.id,
@@ -76,8 +75,7 @@ export class UserRepositoryPrisma implements UserGateway {
         },
       });
 
-      if (!dbUser)
-        throw new EntityNotFoundError(`User with email ${email} not found`);
+      if (!dbUser) return null;
 
       const user = User.restore({
         id: dbUser.id,
@@ -111,8 +109,7 @@ export class UserRepositoryPrisma implements UserGateway {
     try {
       const dbUser = await this.findById(id);
 
-      if (!dbUser)
-        throw new EntityNotFoundError(`User with id ${id} not found`);
+      if (!dbUser) return;
 
       const deactivatedUser = dbUser.deactivate();
 
