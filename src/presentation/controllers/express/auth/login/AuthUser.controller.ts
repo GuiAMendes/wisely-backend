@@ -4,10 +4,6 @@ import { Request, Response } from "express";
 // Use case
 import { AuthUserUseCase } from "../../../../../application/use-cases/auth/login/AuthUser.usecase";
 
-// Value object
-import { Email } from "../../../../../domain/value-object/user/Email";
-import { Password } from "../../../../../domain/value-object/user/Password";
-
 // Interfaces
 import type { Cryptation } from "../../../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
 import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
@@ -49,11 +45,7 @@ export class AuthUserController implements Route {
     return async (request: Request, response: Response) => {
       const { email, password } = request.body;
 
-      const checkEmail = Email.create(email);
-
-      const checkPassword = Password.create(password, this.cryptationService);
-
-      if (!checkEmail || !checkPassword) {
+      if (!email || !password) {
         response.status(400).json({ error: "Missing email or password" });
         return;
       }
