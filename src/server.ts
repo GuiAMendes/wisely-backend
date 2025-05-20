@@ -7,15 +7,15 @@ import { JwtToken } from "./infra/services/token/JwtToken";
 import { AuthUserController } from "./presentation/controllers/express/auth/login/AuthUser.controller";
 import { Bcrypt } from "./infra/services/cryptation/Bcrypt";
 import { ApiExpress } from "./infra/api/express/api.express";
+import { CreateUserUseCase } from "./application/use-cases/user/create/CreateUser.usecase";
+import { CryptoUuidGenerator } from "./infra/services/uuid/CryptoUuidGenerator";
+import { CreateUserController } from "./presentation/controllers/express/user/register/CreateUser.controller";
 
 dotenv.config();
 
 const PORT = Number(process.env.PORT) || 3333;
 
 function runApplication() {
-  // ORM
-  const prisma = Prisma.getInstance();
-
   // Token
   const jwtToken = new JwtToken();
   const tokenProvider = new GenerateTokenProvider(jwtToken);
@@ -23,15 +23,37 @@ function runApplication() {
   // Cryptation
   const bcryptService = new Bcrypt();
 
+  // UUID
+  const cryptoUUID = new CryptoUuidGenerator();
+
+  // ORM
+  const prisma = Prisma.getInstance();
+  // Repository
   const userRepository = UserRepositoryPrisma.with(prisma);
-  const authUserUseCAse = AuthUserUseCase.create(userRepository, tokenProvider);
+
+  //* Routes *//
+
+  //Login
+  const authUserUseCase = AuthUserUseCase.create(userRepository, tokenProvider);
   const authUserController = AuthUserController.create(
-    authUserUseCAse,
+    authUserUseCase,
     bcryptService,
     jwtToken
   );
 
-  const API = ApiExpress.create([authUserController]);
+  // Register
+  const createUserUseCase = CreateUserUseCase.create(
+    userRepository,
+    cryptoUUID,
+    bcryptService
+  );
+  const createUserController = CreateUserController.create(
+    createUserUseCase,
+    cryptoUUID,
+    bcryptService
+  );
+
+  const API = ApiExpress.create([authUserController, createUserController]);
   API.start(PORT);
 }
 
