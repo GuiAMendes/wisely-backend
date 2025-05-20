@@ -1,14 +1,14 @@
 // Interfaces
-import { UserGateway } from "../../../domain/gateway/user/user.gateway";
-import { GenerateTokenProvider } from "../../../infra/provider/token/GenerateTokenProvider";
-import { UnauthorizedError } from "../../../presentation/errors/UnauthorizedError";
-import { Usecase } from "../interface/usecase.interface";
+import { UserGateway } from "../../../../domain/gateway/user/user.gateway";
+import { GenerateTokenProvider } from "../../../../infra/provider/token/GenerateTokenProvider";
+import { UnauthorizedError } from "../../../../presentation/errors/UnauthorizedError";
+import { Usecase } from "../../interface/usecase.interface";
 
 // DTOS
 import {
   AuthUserUseCaseInputDTO,
   AuthUserUsecaseOutputDTO,
-} from "../../../presentation/dtos/auth/usecaseDTO";
+} from "../../../../presentation/dtos/auth/usecaseDTO";
 
 export class AuthUserUseCase
   implements Usecase<AuthUserUseCaseInputDTO, AuthUserUsecaseOutputDTO>

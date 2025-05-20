@@ -2,7 +2,7 @@
 import { Request, Response } from "express";
 
 // Use case
-import { AuthUserUseCase } from "../../../../../application/use-cases/auth/AuthUser.usecase";
+import { AuthUserUseCase } from "../../../../../application/use-cases/auth/login/AuthUser.usecase";
 
 // Interfaces
 import { Cryptation } from "../../../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
