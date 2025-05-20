@@ -58,9 +58,8 @@ export class User {
     });
   }
 
-  public changeEmail(newEmail: string) {
-    const email = Email.create(newEmail);
-    return this.onChange({ email });
+  public changeUsername(newUsername: string) {
+    return this.onChange({ username: newUsername });
   }
 
   public deactivate() {
