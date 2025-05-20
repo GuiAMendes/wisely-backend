@@ -4,19 +4,23 @@ import { Request, Response } from "express";
 // Use case
 import { AuthUserUseCase } from "../../../../../application/use-cases/auth/login/AuthUser.usecase";
 
+// Value object
+import { Email } from "../../../../../domain/value-object/user/Email";
+import { Password } from "../../../../../domain/value-object/user/Password";
+
 // Interfaces
-import { Cryptation } from "../../../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type { Cryptation } from "../../../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
 
 // Presenter
 import { presenter } from "./AuthUser.presenter";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
-import { Email } from "../../../../../domain/value-object/user/Email";
-import { PasswordValidator } from "../../../../../domain/validator/user";
-import { Password } from "../../../../../domain/value-object/user/Password";
 
 export class AuthUserController implements Route {
   private constructor(
