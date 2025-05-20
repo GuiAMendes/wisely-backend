@@ -14,6 +14,9 @@ import { presenter } from "./AuthUser.presenter";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
+import { Email } from "../../../../../domain/value-object/user/Email";
+import { PasswordValidator } from "../../../../../domain/validator/user";
+import { Password } from "../../../../../domain/value-object/user/Password";
 
 export class AuthUserController implements Route {
   private constructor(
@@ -42,7 +45,11 @@ export class AuthUserController implements Route {
     return async (request: Request, response: Response) => {
       const { email, password } = request.body;
 
-      if (!email || !password) {
+      const checkEmail = Email.create(email);
+
+      const checkPassword = Password.create(password, this.cryptationService);
+
+      if (!checkEmail || !checkPassword) {
         response.status(400).json({ error: "Missing email or password" });
         return;
       }
