@@ -32,4 +32,8 @@ export class ApiExpress implements API {
       console.log(`Server running in port ${port}...`);
     });
   }
+
+  public getApp(): Express {
+    return this.app;
+  }
 }
