@@ -93,11 +93,11 @@ export class UserRepositoryPrisma implements UserGateway {
     }
   }
 
-  async update(user: User): Promise<void> {
+  async updateName(id: string, newUsername: string): Promise<void> {
     try {
       await this.prismaClient.user.update({
-        where: { id: user.id },
-        data: { username: user.username },
+        where: { id },
+        data: { username: newUsername },
       });
     } catch (error) {
       console.error("Failed to update user:", error);
