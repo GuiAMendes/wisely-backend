@@ -37,6 +37,8 @@ export class RenameDirectoryController implements Route {
    *   patch:
    *     summary: Altera o nome de diretório de um diretório existente
    *     tags: [Directory]
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id

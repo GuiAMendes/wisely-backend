@@ -37,6 +37,8 @@ export class RenameUserController implements Route {
    *   patch:
    *     summary: Altera o nome de usuário de um usuário existente
    *     tags: [User]
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id
