@@ -14,6 +14,8 @@ import { ListAllDirectoriesController } from "../presentation/controllers/expres
 
 import { ListDirectoriesAccessedRecentlyUseCase } from "../application/use-cases/directory/listRecents/ListAllDirectories.usecase";
 import { ListDirectoriesAccessedRecentlyController } from "../presentation/controllers/express/directory/listRecents/ListDirectoriesAccessedRecently.controller";
+import { RenameDirectoryUseCase } from "../application/use-cases/directory/rename/RenameUser.usecase";
+import { RenameDirectoryController } from "../presentation/controllers/express/directory/rename/RenameDirectory.controller";
 
 export function createDirectoryControllers() {
   const directoryRepository = DirectoryRepositoryPrisma.with(prisma);
@@ -33,5 +35,9 @@ export function createDirectoryControllers() {
     jwtToken
   );
 
-  return [create, listAll, listRecent];
+  const rename = RenameDirectoryController.create(
+    RenameDirectoryUseCase.create(directoryRepository)
+  );
+
+  return [create, listAll, listRecent, rename];
 }

@@ -234,4 +234,8 @@ export class DirectoryRepositoryPrisma implements DirectoryGateway {
       throw new DatabaseError("Database error while completing directory.");
     }
   }
+
+  async updateDateOfAccess(id: string): Promise<void> {
+    
+  }
 }
