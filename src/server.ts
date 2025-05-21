@@ -10,6 +10,8 @@ import { ApiExpress } from "./infra/api/express/api.express";
 import { CreateUserUseCase } from "./application/use-cases/user/create/CreateUser.usecase";
 import { CryptoUuidGenerator } from "./infra/services/uuid/CryptoUuidGenerator";
 import { CreateUserController } from "./presentation/controllers/express/user/register/CreateUser.controller";
+import { RenameUserUseCase } from "./application/use-cases/user/rename/RenameUser.usecase";
+import { RenameUserController } from "./presentation/controllers/express/user/rename/RenameUser.controller";
 
 dotenv.config();
 
@@ -53,7 +55,15 @@ function runApplication() {
     bcryptService
   );
 
-  const API = ApiExpress.create([authUserController, createUserController]);
+  // Raname user
+  const renameUserUseCase = RenameUserUseCase.create(userRepository);
+  const renameUserController = RenameUserController.create(renameUserUseCase);
+
+  const API = ApiExpress.create([
+    authUserController,
+    createUserController,
+    renameUserController,
+  ]);
   API.start(PORT);
 }
 
