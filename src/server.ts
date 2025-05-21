@@ -15,6 +15,8 @@ import { RenameUserController } from "./presentation/controllers/express/user/re
 import { DirectoryRepositoryPrisma } from "./infra/reporitory/prisma/directory/directory.repository";
 import { CreateDirectoryUseCase } from "./application/use-cases/directory/create/CreateDirectory.usecase";
 import { CreateDirectoryController } from "./presentation/controllers/express/directory/create/CreateDirectory.controller";
+import { ListAllDirectoriesUseCase } from "./application/use-cases/directory/listAll/ListAllDirectories.usecase";
+import { ListAllDirectoriesController } from "./presentation/controllers/express/directory/listAll/ListAllDirectories.controller";
 
 dotenv.config();
 
@@ -68,6 +70,7 @@ function runApplication() {
 
   // # Directory
 
+  // Create
   const createDirectoryUseCase = CreateDirectoryUseCase.create(
     directoryRepository,
     cryptoUUID
@@ -77,11 +80,20 @@ function runApplication() {
     jwtToken
   );
 
+  // ListAll
+  const listAllDirectoriesUseCase =
+    ListAllDirectoriesUseCase.create(directoryRepository);
+  const listAllDirectoriesController = ListAllDirectoriesController.create(
+    listAllDirectoriesUseCase,
+    jwtToken
+  );
+
   const API = ApiExpress.create([
     authUserController,
     createUserController,
     renameUserController,
     createDirecotryController,
+    listAllDirectoriesController,
   ]);
   API.start(PORT);
 }
