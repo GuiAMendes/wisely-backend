@@ -17,6 +17,8 @@ import { CreateDirectoryUseCase } from "./application/use-cases/directory/create
 import { CreateDirectoryController } from "./presentation/controllers/express/directory/create/CreateDirectory.controller";
 import { ListAllDirectoriesUseCase } from "./application/use-cases/directory/listAll/ListAllDirectories.usecase";
 import { ListAllDirectoriesController } from "./presentation/controllers/express/directory/listAll/ListAllDirectories.controller";
+import { ListDirectoriesAccessedRecentlyUseCase } from "./application/use-cases/directory/listRecents/ListAllDirectories.usecase";
+import { ListDirectoriesAccessedRecentlyController } from "./presentation/controllers/express/directory/listRecents/ListDirectoriesAccessedRecently.controller";
 
 dotenv.config();
 
@@ -88,12 +90,22 @@ function runApplication() {
     jwtToken
   );
 
+  // ListRecentaccess
+  const listDirectoriesAccessedRecentlyUseCase =
+    ListDirectoriesAccessedRecentlyUseCase.create(directoryRepository);
+  const listDirectoriesAccessedRecentlyController =
+    ListDirectoriesAccessedRecentlyController.create(
+      listDirectoriesAccessedRecentlyUseCase,
+      jwtToken
+    );
+
   const API = ApiExpress.create([
     authUserController,
     createUserController,
     renameUserController,
     createDirecotryController,
     listAllDirectoriesController,
+    listDirectoriesAccessedRecentlyController,
   ]);
   API.start(PORT);
 }
