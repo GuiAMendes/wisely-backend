@@ -2,7 +2,7 @@
 import { Request, Response } from "express";
 
 // Use case
-import { RenameDirectoryUseCase } from "../../../../../application/use-cases/directory/rename/RenameUser.usecase";
+import { RenameDirectoryUseCase } from "../../../../../application/use-cases/directory/rename/RenameDirectory.usecase";
 
 // Interfaces
 import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
