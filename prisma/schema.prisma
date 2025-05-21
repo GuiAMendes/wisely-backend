@@ -13,7 +13,7 @@ model directory {
   id             String           @id @db.Char(36)
   directory_name String           @db.VarChar(100)
   created_at     DateTime?        @default(now()) @db.Timestamp(0)
-  updated_at     DateTime?        @default(now()) @db.Timestamp(0)
+  updated_at     DateTime?        @updatedAt @db.Timestamp(0)
   is_completed   Boolean?         @default(false)
   is_active      Boolean?         @default(true)
   is_template    Boolean?         @default(false)
@@ -46,7 +46,7 @@ model flashcard {
   question     String    @db.Text
   response     String    @db.Text
   created_at   DateTime? @default(now()) @db.Timestamp(0)
-  updated_at   DateTime? @default(now()) @db.Timestamp(0)
+  updated_at   DateTime? @updatedAt @db.Timestamp(0)
   completed_at DateTime? @db.Timestamp(0)
   is_active    Boolean?  @default(true)
   topic        topic     @relation(fields: [id_topic], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_topic_flashcard")
@@ -61,7 +61,7 @@ model journey {
   journey_name    String     @db.VarChar(100)
   type_of_journey String?    @default("free") @db.VarChar(4)
   created_at      DateTime?  @default(now()) @db.Timestamp(0)
-  updated_at      DateTime?  @default(now()) @db.Timestamp(0)
+  updated_at      DateTime?  @updatedAt @db.Timestamp(0)
   is_completed    Boolean?   @default(false)
   is_active       Boolean?   @default(true)
   directory       directory  @relation(fields: [id_directory], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_directory_journey")
@@ -87,7 +87,7 @@ model progress {
   id_journey       String    @db.Char(36)
   completed_topics Int?      @default(0)
   total_topics     Int
-  updated_at       DateTime? @default(now()) @db.Timestamp(0)
+  updated_at       DateTime? @updatedAt @db.Timestamp(0)
   is_active        Boolean?  @default(true)
   journey          journey   @relation(fields: [id_journey], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_progress_journey")
 
@@ -127,7 +127,7 @@ model summary {
   title        String    @db.VarChar(100)
   note         String    @db.LongText
   created_at   DateTime? @default(now()) @db.Timestamp(0)
-  updated_at   DateTime? @default(now()) @db.Timestamp(0)
+  updated_at   DateTime? @updatedAt @db.Timestamp(0)
   completed_at DateTime? @db.Timestamp(0)
   is_active    Boolean?  @default(true)
   topic        topic     @relation(fields: [id_topic], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_topic_summary")
@@ -141,7 +141,7 @@ model topic {
   id_journey   String       @db.Char(36)
   topic_name   String       @db.VarChar(100)
   created_at   DateTime?    @default(now()) @db.Timestamp(0)
-  updated_at   DateTime?    @default(now()) @db.Timestamp(0)
+  updated_at   DateTime?    @updatedAt @db.Timestamp(0)
   completed_at DateTime?    @db.Timestamp(0)
   is_active    Boolean?     @default(true)
   is_concluded Boolean?     @default(false)
