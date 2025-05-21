@@ -12,6 +12,9 @@ import { CryptoUuidGenerator } from "./infra/services/uuid/CryptoUuidGenerator";
 import { CreateUserController } from "./presentation/controllers/express/user/register/CreateUser.controller";
 import { RenameUserUseCase } from "./application/use-cases/user/rename/RenameUser.usecase";
 import { RenameUserController } from "./presentation/controllers/express/user/rename/RenameUser.controller";
+import { DirectoryRepositoryPrisma } from "./infra/reporitory/prisma/directory/directory.repository";
+import { CreateDirectoryUseCase } from "./application/use-cases/directory/create/CreateDirectory.usecase";
+import { CreateDirectoryController } from "./presentation/controllers/express/directory/create/CreateDirectory.controller";
 
 dotenv.config();
 
@@ -30,10 +33,14 @@ function runApplication() {
 
   // ORM
   const prisma = Prisma.getInstance();
+
   // Repository
   const userRepository = UserRepositoryPrisma.with(prisma);
+  const directoryRepository = DirectoryRepositoryPrisma.with(prisma);
 
   //* Routes *//
+
+  // # User
 
   //Login
   const authUserUseCase = AuthUserUseCase.create(userRepository, tokenProvider);
@@ -59,10 +66,22 @@ function runApplication() {
   const renameUserUseCase = RenameUserUseCase.create(userRepository);
   const renameUserController = RenameUserController.create(renameUserUseCase);
 
+  // # Directory
+
+  const createDirectoryUseCase = CreateDirectoryUseCase.create(
+    directoryRepository,
+    cryptoUUID
+  );
+  const createDirecotryController = CreateDirectoryController.create(
+    createDirectoryUseCase,
+    jwtToken
+  );
+
   const API = ApiExpress.create([
     authUserController,
     createUserController,
     renameUserController,
+    createDirecotryController,
   ]);
   API.start(PORT);
 }
