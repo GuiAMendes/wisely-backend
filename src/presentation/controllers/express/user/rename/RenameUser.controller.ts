@@ -31,6 +31,56 @@ export class RenameUserController implements Route {
     );
   }
 
+  /**
+   * @swagger
+   * /user/{id}/rename:
+   *   patch:
+   *     summary: Altera o nome de usuário de um usuário existente
+   *     tags: [User]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID do usuário a ser renomeado
+   *         schema:
+   *           type: string
+   *           format: uuid
+   *           example: 123e4567-e89b-12d3-a456-426614174000
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - newUsername
+   *             properties:
+   *               newUsername:
+   *                 type: string
+   *                 example: novoUsuario123
+   *     responses:
+   *       200:
+   *         description: Nome de usuário atualizado com sucesso
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 idUser:
+   *                   type: string
+   *                   format: uuid
+   *                   example: 123e4567-e89b-12d3-a456-426614174000
+   *                 username:
+   *                   type: string
+   *                   example: novoUsuario123
+   *       400:
+   *         description: Requisição malformada (username inválido ou perigoso)
+   *       401:
+   *         description: Não autorizado
+   *       500:
+   *         description: Erro interno do servidor
+   */
+
   getHandler() {
     return async (request: Request, response: Response) => {
       const { newUsername } = request.body;

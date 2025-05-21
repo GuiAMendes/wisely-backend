@@ -42,6 +42,59 @@ export class CreateUserController implements Route {
     );
   }
 
+  /**
+   * @swagger
+   * /register:
+   *   post:
+   *     summary: Cria um novo usuário no sistema
+   *     tags: [User]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - username
+   *               - email
+   *               - password
+   *             properties:
+   *               username:
+   *                 type: string
+   *                 example: usuario123
+   *               email:
+   *                 type: string
+   *                 format: email
+   *                 example: usuario@example.com
+   *               password:
+   *                 type: string
+   *                 example: pwdSegura@123
+   *     responses:
+   *       201:
+   *         description: Usuário criado com sucesso
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: string
+   *                   format: uuid
+   *                   example: 123e4567-e89b-12d3-a456-426614174000
+   *                 username:
+   *                   type: string
+   *                   example: usuario123
+   *                 email:
+   *                   type: string
+   *                   format: email
+   *                   example: usuario@example.com
+   *       400:
+   *         description: Requisição malformada (faltando username, email ou senha)
+   *       401:
+   *         description: Não autorizado
+   *       500:
+   *         description: Erro interno do servidor
+   */
   getHandler() {
     return async (request: Request, response: Response) => {
       const { username, email, password } = request.body;

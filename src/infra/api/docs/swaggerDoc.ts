@@ -17,6 +17,10 @@ export const swaggerSpec = swaggerJSDoc({
         name: "User",
         description: "Gerenciamento de usuários",
       },
+      {
+        name: "Directory",
+        description: "Gerenciamento de diretórios",
+      },
     ],
     components: {
       securitySchemes: {

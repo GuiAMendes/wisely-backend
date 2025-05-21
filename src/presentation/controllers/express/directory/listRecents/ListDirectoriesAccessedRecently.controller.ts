@@ -37,6 +37,53 @@ export class ListDirectoriesAccessedRecentlyController implements Route {
     );
   }
 
+  /**
+   * @swagger
+   * /{id}/directory/recents:
+   *   get:
+   *     summary: Lista diretórios acessados recentemente por um usuário
+   *     tags: [Directory]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID do usuário que acessou os diretórios recentemente
+   *         schema:
+   *           type: string
+   *           format: uuid
+   *           example: 123e4567-e89b-12d3-a456-426614174000
+   *     responses:
+   *       200:
+   *         description: Lista de diretórios acessados recentemente retornada com sucesso
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 directories:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                       id:
+   *                         type: string
+   *                         format: uuid
+   *                         example: "def67890-1234-abcd-efgh-ijklmnopqrst"
+   *                       name:
+   *                         type: string
+   *                         example: "ProjetosRecentes"
+   *                       lastAccessedAt:
+   *                         type: string
+   *                         format: date-time
+   *                         example: "2025-05-20T14:30:00Z"
+   *       401:
+   *         description: Não autorizado (token inválido ou ausente)
+   *       500:
+   *         description: Erro interno do servidor
+   */
+
   getHandler() {
     return async (request: Request, response: Response) => {
       const authOk = await new Promise<boolean>((resolve) => {
