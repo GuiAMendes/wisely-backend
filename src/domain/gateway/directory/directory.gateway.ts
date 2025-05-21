@@ -8,6 +8,7 @@ export interface DirectoryGateway {
   listAll(idUser: string): Promise<Directory[]>;
   listRecentAccess(idUser: string): Promise<Directory[]>;
   updateName(id: string, newName: string): Promise<void>;
+  updateDateOfAccess(id: string): Promise<void>;
   complete(id: string): Promise<void>;
   deactivate(id: string): Promise<void>;
 }
