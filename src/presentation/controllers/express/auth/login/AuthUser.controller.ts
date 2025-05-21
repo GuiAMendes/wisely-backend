@@ -41,6 +41,47 @@ export class AuthUserController implements Route {
     );
   }
 
+  /**
+   * @swagger
+   * /login:
+   *   post:
+   *     summary: Autentica um usuário e retorna um token JWT
+   *     tags: [Auth]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - email
+   *               - password
+   *             properties:
+   *               email:
+   *                 type: string
+   *                 format: email
+   *                 example: usuario@example.com
+   *               password:
+   *                 type: string
+   *                 example: senha123
+   *     responses:
+   *       200:
+   *         description: Token JWT gerado com sucesso
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 token:
+   *                   type: string
+   *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   *       400:
+   *         description: Requisição malformada (falta email ou senha)
+   *       401:
+   *         description: Credenciais inválidas
+   *       500:
+   *         description: Erro interno do servidor
+   */
   getHandler() {
     return async (request: Request, response: Response) => {
       const { email, password } = request.body;

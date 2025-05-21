@@ -1,6 +1,9 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./infra/api/docs/swaggerDoc";
+
 import { ApiExpress } from "./infra/api/express/api.express";
 import { createUserControllers } from "./factories/userFactory";
 import { createDirectoryControllers } from "./factories/directoryFactory";
@@ -14,6 +17,8 @@ function runApplication() {
   ];
 
   const API = ApiExpress.create(controllers);
+
+  API.getApp().use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   API.start(PORT);
 }
 
