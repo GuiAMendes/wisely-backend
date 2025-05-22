@@ -45,7 +45,9 @@ export class DirectoryRepositoryPrisma implements DirectoryGateway {
       const dbDirectoryList = await this.prismaClient.directory.findMany({
         where: {
           id_user: idUser,
-          directory_name: directoryName,
+          directory_name: {
+            contains: directoryName,
+          },
           is_active: true,
         },
       });
