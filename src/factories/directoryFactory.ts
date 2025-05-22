@@ -20,6 +20,12 @@ import { RenameDirectoryController } from "../presentation/controllers/express/d
 
 import { UpdateDateOfAccessDirectoryUseCase } from "../application/use-cases/directory/updateDateOfAccess/UpdateDateOfAccessDirectory.usecase";
 import { UpdateDateOfAccessDirectoryController } from "../presentation/controllers/express/directory/updateDate/UpdateDateOfAccessDirectory.controller";
+import { FindByNameDirectoriesController } from "../presentation/controllers/express/directory/findByName/FindByNameDirectories.controller";
+import { FindByNameDirectoriesUseCase } from "../application/use-cases/directory/findByName/FindByNameDirectories.usecase";
+import { CompleteDirectoryController } from "../presentation/controllers/express/directory/complete/CompleteDirectory.controller";
+import { CompleteDirectoryUseCase } from "../application/use-cases/directory/complete/CompleteDirectory.usecase";
+import { DeactivateDirectoryUseCase } from "../application/use-cases/directory/deactivate/DeactivateDirectory.usecase";
+import { DeactivateDirectoryController } from "../presentation/controllers/express/directory/deactivate/DeactivateDirectory.controller";
 
 export function createDirectoryControllers() {
   const directoryRepository = DirectoryRepositoryPrisma.with(prisma);
@@ -47,5 +53,27 @@ export function createDirectoryControllers() {
     UpdateDateOfAccessDirectoryUseCase.create(directoryRepository)
   );
 
-  return [create, listAll, listRecent, rename, updateLastAccess];
+  const findByName = FindByNameDirectoriesController.create(
+    FindByNameDirectoriesUseCase.create(directoryRepository),
+    jwtToken
+  );
+
+  const markAsComplete = CompleteDirectoryController.create(
+    CompleteDirectoryUseCase.create(directoryRepository)
+  );
+
+  const deactivateDirectory = DeactivateDirectoryController.create(
+    DeactivateDirectoryUseCase.create(directoryRepository)
+  );
+
+  return [
+    create,
+    listAll,
+    listRecent,
+    findByName,
+    rename,
+    updateLastAccess,
+    markAsComplete,
+    deactivateDirectory,
+  ];
 }
