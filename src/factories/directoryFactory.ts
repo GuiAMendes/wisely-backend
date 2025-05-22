@@ -22,6 +22,8 @@ import { UpdateDateOfAccessDirectoryUseCase } from "../application/use-cases/dir
 import { UpdateDateOfAccessDirectoryController } from "../presentation/controllers/express/directory/updateDate/UpdateDateOfAccessDirectory.controller";
 import { FindByNameDirectoriesController } from "../presentation/controllers/express/directory/findByName/FindByNameDirectories.controller";
 import { FindByNameDirectoriesUseCase } from "../application/use-cases/directory/findByName/FindByNameDirectories.usecase";
+import { CompleteDirectoryController } from "../presentation/controllers/express/directory/complete/CompleteDirectory.controller";
+import { CompleteDirectoryUseCase } from "../application/use-cases/directory/complete/CompleteDirectory.usecase";
 
 export function createDirectoryControllers() {
   const directoryRepository = DirectoryRepositoryPrisma.with(prisma);
@@ -54,5 +56,17 @@ export function createDirectoryControllers() {
     jwtToken
   );
 
-  return [create, listAll, listRecent, findByName, rename, updateLastAccess];
+  const markAsComplete = CompleteDirectoryController.create(
+    CompleteDirectoryUseCase.create(directoryRepository)
+  );
+
+  return [
+    create,
+    listAll,
+    listRecent,
+    findByName,
+    rename,
+    updateLastAccess,
+    markAsComplete,
+  ];
 }
