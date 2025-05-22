@@ -219,19 +219,43 @@ export class DirectoryRepositoryPrisma implements DirectoryGateway {
 
       if (!dbDirectory) return;
 
-      const completedUser = dbDirectory.Complete();
+      const completedDirectory = dbDirectory.complete();
 
       await this.prismaClient.directory.update({
         where: {
           id: dbDirectory.id,
         },
         data: {
-          is_completed: completedUser.isCompleted,
+          is_completed: completedDirectory.isCompleted,
         },
       });
     } catch (error) {
       console.error("Failed to complete directory:", error);
       throw new DatabaseError("Database error while completing directory.");
+    }
+  }
+
+  async updateDateOfAccess(id: string): Promise<void> {
+    try {
+      const dbDirectory = await this.findById(id);
+
+      if (!dbDirectory) return;
+
+      const updatedDirectory = dbDirectory.updateDateOfAccess();
+
+      await this.prismaClient.directory.update({
+        where: {
+          id: dbDirectory.id,
+        },
+        data: {
+          updated_at: updatedDirectory.updatedAt,
+        },
+      });
+    } catch (error) {
+      console.error("Failed to update date of the directory:", error);
+      throw new DatabaseError(
+        "Database error while update date of the directory."
+      );
     }
   }
 }

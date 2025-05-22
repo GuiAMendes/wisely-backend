@@ -59,7 +59,7 @@ export class Directory {
     });
   }
 
-  public Complete() {
+  public complete() {
     return this.onChange({ isCompleted: true });
   }
 
@@ -69,6 +69,10 @@ export class Directory {
 
   public activate() {
     return this.onChange({ isActive: true });
+  }
+
+  public updateDateOfAccess() {
+    return this.onChange({ updatedAt: new Date() });
   }
 
   public rename(newName: string) {

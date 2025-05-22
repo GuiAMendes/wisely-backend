@@ -38,6 +38,69 @@ export class CreateDirectoryController implements Route {
     );
   }
 
+  /**
+   * @swagger
+   * /{id}/directory:
+   *   post:
+   *     summary: Cria um novo diretório para o usuário especificado
+   *     tags: [Directory]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID do usuário que irá receber o diretório
+   *         schema:
+   *           type: string
+   *           format: uuid
+   *           example: 123e4567-e89b-12d3-a456-426614174000
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - name
+   *             properties:
+   *               name:
+   *                 type: string
+   *                 example: "MeuDiretorio"
+   *               isTemplate:
+   *                 type: boolean
+   *                 example: false
+   *     responses:
+   *       201:
+   *         description: Diretório criado com sucesso
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 id:
+   *                   type: string
+   *                   format: uuid
+   *                   example: "abc12345-def6-7890-gh12-ijklmnopqrst"
+   *                 name:
+   *                   type: string
+   *                   example: "MeuDiretorio"
+   *       400:
+   *         description: Requisição malformada (nome inválido ou ausente)
+   *       401:
+   *         description: Não autorizado (token inválido ou ausente)
+   *       500:
+   *         description: Erro interno do servidor
+   */
+  /**
+   * @swagger
+   * components:
+   *   securitySchemes:
+   *     bearerAuth:
+   *       type: http
+   *       scheme: bearer
+   *       bearerFormat: JWT
+   */
   getHandler() {
     return async (request: Request, response: Response) => {
       const authOk = await new Promise<boolean>((resolve) => {
