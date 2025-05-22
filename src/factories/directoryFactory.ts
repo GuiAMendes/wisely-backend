@@ -20,6 +20,8 @@ import { RenameDirectoryController } from "../presentation/controllers/express/d
 
 import { UpdateDateOfAccessDirectoryUseCase } from "../application/use-cases/directory/updateDateOfAccess/UpdateDateOfAccessDirectory.usecase";
 import { UpdateDateOfAccessDirectoryController } from "../presentation/controllers/express/directory/updateDate/UpdateDateOfAccessDirectory.controller";
+import { FindByNameDirectoriesController } from "../presentation/controllers/express/directory/findByName/FindByNameDirectories.controller";
+import { FindByNameDirectoriesUseCase } from "../application/use-cases/directory/findByName/FindByNameDirectories.usecase";
 
 export function createDirectoryControllers() {
   const directoryRepository = DirectoryRepositoryPrisma.with(prisma);
@@ -47,5 +49,10 @@ export function createDirectoryControllers() {
     UpdateDateOfAccessDirectoryUseCase.create(directoryRepository)
   );
 
-  return [create, listAll, listRecent, rename, updateLastAccess];
+  const findByName = FindByNameDirectoriesController.create(
+    FindByNameDirectoriesUseCase.create(directoryRepository),
+    jwtToken
+  );
+
+  return [create, listAll, listRecent, findByName, rename, updateLastAccess];
 }
