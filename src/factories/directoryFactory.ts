@@ -24,6 +24,8 @@ import { FindByNameDirectoriesController } from "../presentation/controllers/exp
 import { FindByNameDirectoriesUseCase } from "../application/use-cases/directory/findByName/FindByNameDirectories.usecase";
 import { CompleteDirectoryController } from "../presentation/controllers/express/directory/complete/CompleteDirectory.controller";
 import { CompleteDirectoryUseCase } from "../application/use-cases/directory/complete/CompleteDirectory.usecase";
+import { DeactivateDirectoryUseCase } from "../application/use-cases/directory/deactivate/DeactivateDirectory.usecase";
+import { DeactivateDirectoryController } from "../presentation/controllers/express/directory/deactivate/DeactivateDirectory.controller";
 
 export function createDirectoryControllers() {
   const directoryRepository = DirectoryRepositoryPrisma.with(prisma);
@@ -60,6 +62,10 @@ export function createDirectoryControllers() {
     CompleteDirectoryUseCase.create(directoryRepository)
   );
 
+  const deactivateDirectory = DeactivateDirectoryController.create(
+    DeactivateDirectoryUseCase.create(directoryRepository)
+  );
+
   return [
     create,
     listAll,
@@ -68,5 +74,6 @@ export function createDirectoryControllers() {
     rename,
     updateLastAccess,
     markAsComplete,
+    deactivateDirectory,
   ];
 }
