@@ -1,5 +1,6 @@
 // External libraries
 import express, { Express } from "express";
+import cors from "cors";
 
 // Interfaces
 import type { Route } from "./routes";
@@ -11,6 +12,13 @@ export class ApiExpress implements API {
   private constructor(routes: Route[]) {
     this.app = express();
     this.app.use(express.json());
+    this.app.use(
+      cors({
+        origin: "*",
+        methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+        credentials: true,
+      })
+    );
     this.addRoutes(routes);
   }
 
