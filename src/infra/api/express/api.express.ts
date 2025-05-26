@@ -35,9 +35,12 @@ export class ApiExpress implements API {
     });
   }
 
-  public start(port: number) {
+  public start(port: number): void {
     this.app.listen(port, () => {
-      console.log(`Server running in port ${port}...`);
+      console.log(
+        `Server is running at:    http://localhost:${port}\nSwagger API available at: http://localhost:${port}/docs
+      `.trim()
+      );
     });
   }
 
