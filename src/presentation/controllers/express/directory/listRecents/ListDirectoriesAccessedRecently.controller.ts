@@ -2,7 +2,7 @@
 import { Request, Response } from "express";
 
 // Use case
-import { ListDirectoriesAccessedRecentlyUseCase } from "../../../../../application/use-cases/directory/listRecents/ListAllDirectories.usecase";
+import { ListDirectoriesAccessedRecentlyUseCase } from "../../../../../application/use-cases/directory/listRecents/ListDirectoriesAccessedRecently.usecase";
 
 // Interfaces
 import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
