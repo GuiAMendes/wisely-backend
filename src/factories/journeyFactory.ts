@@ -21,6 +21,9 @@ import { FindByNameJourneysController } from "../presentation/controllers/expres
 import { UpdateDateOfAccessJourneyUseCase } from "../application/use-cases/journey/updateDateOfAccess/UpdateDateOfAccessDirectory.usecase";
 import { UpdateDateOfAccessJourneyController } from "../presentation/controllers/express/journey/updateDate/UpdateDateOfAccessJourney.controller";
 
+import { CompleteJourneyUseCase } from "../application/use-cases/journey/complete/CompleteJourney.usecase";
+import { CompleteJourneyController } from "../presentation/controllers/express/journey/complete/CompleteJourney.controller";
+
 export function createJourneyControllers() {
   const journeyRepository = JourneyRepositoryPrisma.with(prisma);
 
@@ -48,5 +51,16 @@ export function createJourneyControllers() {
     UpdateDateOfAccessJourneyUseCase.create(journeyRepository)
   );
 
-  return [create, listAll, listRecent, findByName, updateLastAccess];
+  const markAsComplete = CompleteJourneyController.create(
+    CompleteJourneyUseCase.create(journeyRepository)
+  );
+
+  return [
+    create,
+    listAll,
+    listRecent,
+    findByName,
+    updateLastAccess,
+    markAsComplete,
+  ];
 }
