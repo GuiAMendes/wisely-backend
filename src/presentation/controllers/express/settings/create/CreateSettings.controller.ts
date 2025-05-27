@@ -16,7 +16,7 @@ import { presenter } from "./CreateSettings.presenter";
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
 
-export class CreateUserController implements Route {
+export class CreateSettingsController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
@@ -24,7 +24,7 @@ export class CreateUserController implements Route {
   ) {}
 
   public static create(createSettingsUseCase: CreateSettingsUseCase) {
-    return new CreateUserController(
+    return new CreateSettingsController(
       "/:id/settings",
       "post",
       createSettingsUseCase
