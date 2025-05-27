@@ -21,6 +21,10 @@ export const swaggerSpec = swaggerJSDoc({
         name: "Directory",
         description: "Gerenciamento de diretórios",
       },
+      {
+        name: "Journey",
+        description: "Gerenciamento de jornadas",
+      },
     ],
     components: {
       securitySchemes: {

@@ -27,8 +27,6 @@ export class JourneyRepositoryPrisma implements JourneyGateway {
       id_directory: journey.idDirectory,
       journey_name: journey.journeyName,
       type_of_journey: journey.typeOfJourney,
-      created_at: journey.createdAt,
-      updated_at: journey.updatedAt,
       is_completed: journey.isCompleted,
       is_active: journey.isActive,
     };
