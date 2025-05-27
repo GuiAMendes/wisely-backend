@@ -27,6 +27,9 @@ import { CompleteJourneyController } from "../presentation/controllers/express/j
 import { DeactivateJourneyUseCase } from "../application/use-cases/journey/deactivate/DeactivateJourney.usecase";
 import { DeactivateJourneyController } from "../presentation/controllers/express/journey/deactivate/DeactivateJourney.controller";
 
+import { RenameJourneyUseCase } from "../application/use-cases/journey/rename/RenameJourney.usecase";
+import { RenameJourneyController } from "../presentation/controllers/express/journey/rename/RenameJourney.controller";
+
 export function createJourneyControllers() {
   const journeyRepository = JourneyRepositoryPrisma.with(prisma);
 
@@ -62,6 +65,10 @@ export function createJourneyControllers() {
     DeactivateJourneyUseCase.create(journeyRepository)
   );
 
+  const rename = RenameJourneyController.create(
+    RenameJourneyUseCase.create(journeyRepository)
+  );
+
   return [
     create,
     listAll,
@@ -70,5 +77,6 @@ export function createJourneyControllers() {
     updateLastAccess,
     markAsComplete,
     deactivateDirectory,
+    rename,
   ];
 }
