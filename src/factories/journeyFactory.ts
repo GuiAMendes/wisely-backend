@@ -8,6 +8,8 @@ import { JourneyRepositoryPrisma } from "../infra/reporitory/prisma/journey/jour
 
 import { CreateJourneyUseCase } from "../application/use-cases/journey/create/CreateJourney.usecase";
 import { CreateJourneyController } from "../presentation/controllers/express/journey/create/CreateJourney.controller";
+import { ListAllJourneysController } from "../presentation/controllers/express/journey/listAll/ListAllJourneys.controller";
+import { ListAllJourneysUseCase } from "../application/use-cases/journey/listAll/ListAllJourneys.usecase";
 
 export function createJourneyControllers() {
   const journeyRepository = JourneyRepositoryPrisma.with(prisma);
@@ -17,5 +19,10 @@ export function createJourneyControllers() {
     jwtToken
   );
 
-  return [create];
+  const listAll = ListAllJourneysController.create(
+    ListAllJourneysUseCase.create(journeyRepository),
+    jwtToken
+  );
+
+  return [create, listAll];
 }
