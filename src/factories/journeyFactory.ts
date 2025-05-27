@@ -24,6 +24,9 @@ import { UpdateDateOfAccessJourneyController } from "../presentation/controllers
 import { CompleteJourneyUseCase } from "../application/use-cases/journey/complete/CompleteJourney.usecase";
 import { CompleteJourneyController } from "../presentation/controllers/express/journey/complete/CompleteJourney.controller";
 
+import { DeactivateJourneyUseCase } from "../application/use-cases/journey/deactivate/DeactivateJourney.usecase";
+import { DeactivateJourneyController } from "../presentation/controllers/express/journey/deactivate/DeactivateJourney.controller";
+
 export function createJourneyControllers() {
   const journeyRepository = JourneyRepositoryPrisma.with(prisma);
 
@@ -55,6 +58,10 @@ export function createJourneyControllers() {
     CompleteJourneyUseCase.create(journeyRepository)
   );
 
+  const deactivateDirectory = DeactivateJourneyController.create(
+    DeactivateJourneyUseCase.create(journeyRepository)
+  );
+
   return [
     create,
     listAll,
@@ -62,5 +69,6 @@ export function createJourneyControllers() {
     findByName,
     updateLastAccess,
     markAsComplete,
+    deactivateDirectory,
   ];
 }
