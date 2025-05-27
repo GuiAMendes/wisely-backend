@@ -12,6 +12,8 @@ import { ListAllJourneysController } from "../presentation/controllers/express/j
 import { ListAllJourneysUseCase } from "../application/use-cases/journey/listAll/ListAllJourneys.usecase";
 import { ListAllJourneyAccessedRecentlyController } from "../presentation/controllers/express/journey/listRecents/ListAllJourneysAccessedRecently.controller";
 import { ListAllJourneyAccessedRecentlyUseCase } from "../application/use-cases/journey/listRecents/ListAllJourneyAccessedRecently.usecase";
+import { FindByNameJourneysController } from "../presentation/controllers/express/journey/findByName/FindByNameJourneys.controller";
+import { FindByNameJourneysUseCase } from "../application/use-cases/journey/findByName/FindByNameJourneys.usecase";
 
 export function createJourneyControllers() {
   const journeyRepository = JourneyRepositoryPrisma.with(prisma);
@@ -31,5 +33,10 @@ export function createJourneyControllers() {
     jwtToken
   );
 
-  return [create, listAll, listRecent];
+  const findByName = FindByNameJourneysController.create(
+    FindByNameJourneysUseCase.create(journeyRepository),
+    jwtToken
+  );
+
+  return [create, listAll, listRecent, findByName];
 }
