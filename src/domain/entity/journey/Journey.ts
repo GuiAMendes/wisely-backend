@@ -79,6 +79,10 @@ export class Journey {
     return this.onChange({ isActive: true });
   }
 
+  public updateDateOfAccess() {
+    return this.onChange({ updatedAt: new Date() });
+  }
+
   public rename(newName: string) {
     JourneyValidator.ensureSafeName(newName);
     JourneyValidator.ensureJourneyNameHasMinimumLength(newName);
