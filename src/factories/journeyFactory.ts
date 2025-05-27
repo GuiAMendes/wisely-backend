@@ -8,12 +8,18 @@ import { JourneyRepositoryPrisma } from "../infra/reporitory/prisma/journey/jour
 
 import { CreateJourneyUseCase } from "../application/use-cases/journey/create/CreateJourney.usecase";
 import { CreateJourneyController } from "../presentation/controllers/express/journey/create/CreateJourney.controller";
-import { ListAllJourneysController } from "../presentation/controllers/express/journey/listAll/ListAllJourneys.controller";
+
 import { ListAllJourneysUseCase } from "../application/use-cases/journey/listAll/ListAllJourneys.usecase";
-import { ListAllJourneyAccessedRecentlyController } from "../presentation/controllers/express/journey/listRecents/ListAllJourneysAccessedRecently.controller";
+import { ListAllJourneysController } from "../presentation/controllers/express/journey/listAll/ListAllJourneys.controller";
+
 import { ListAllJourneyAccessedRecentlyUseCase } from "../application/use-cases/journey/listRecents/ListAllJourneyAccessedRecently.usecase";
-import { FindByNameJourneysController } from "../presentation/controllers/express/journey/findByName/FindByNameJourneys.controller";
+import { ListAllJourneyAccessedRecentlyController } from "../presentation/controllers/express/journey/listRecents/ListAllJourneysAccessedRecently.controller";
+
 import { FindByNameJourneysUseCase } from "../application/use-cases/journey/findByName/FindByNameJourneys.usecase";
+import { FindByNameJourneysController } from "../presentation/controllers/express/journey/findByName/FindByNameJourneys.controller";
+
+import { UpdateDateOfAccessJourneyUseCase } from "../application/use-cases/journey/updateDateOfAccess/UpdateDateOfAccessDirectory.usecase";
+import { UpdateDateOfAccessJourneyController } from "../presentation/controllers/express/journey/updateDate/UpdateDateOfAccessJourney.controller";
 
 export function createJourneyControllers() {
   const journeyRepository = JourneyRepositoryPrisma.with(prisma);
@@ -38,5 +44,9 @@ export function createJourneyControllers() {
     jwtToken
   );
 
-  return [create, listAll, listRecent, findByName];
+  const updateLastAccess = UpdateDateOfAccessJourneyController.create(
+    UpdateDateOfAccessJourneyUseCase.create(journeyRepository)
+  );
+
+  return [create, listAll, listRecent, findByName, updateLastAccess];
 }
