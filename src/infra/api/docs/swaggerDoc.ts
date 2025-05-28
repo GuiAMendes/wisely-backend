@@ -25,6 +25,10 @@ export const swaggerSpec = swaggerJSDoc({
         name: "Journey",
         description: "Gerenciamento de jornadas",
       },
+      {
+        name: "Settings",
+        description: "Gerenciamento de configurações da UI",
+      },
     ],
     components: {
       securitySchemes: {

@@ -73,8 +73,7 @@ model journey {
 }
 
 model logging {
-  id         String    @id @db.Char(36)
-  id_user    String    @db.Char(36)
+  id_user    String    @id @db.Char(36)
   operation  String    @db.VarChar(255)
   created_at DateTime? @default(now()) @db.Timestamp(0)
   user       user      @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_logging_user")
@@ -83,20 +82,20 @@ model logging {
 }
 
 model progress {
-  id               String    @id @db.Char(36)
-  id_journey       String    @db.Char(36)
+  id_journey       String    @db.Char(36) @unique
   completed_topics Int?      @default(0)
   total_topics     Int
   updated_at       DateTime? @updatedAt @db.Timestamp(0)
   is_active        Boolean?  @default(true)
   journey          journey   @relation(fields: [id_journey], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_progress_journey")
 
+  @@map("progress")
   @@index([id_journey], map: "fk_progress_journey")
+  @@id([id_journey])
 }
 
 model settings {
-  id          String  @unique(map: "id") @db.Char(36)
-  id_user     String  @db.Char(36)
+  id_user     String  @id @db.Char(36)
   colorSchema String? @default("#ffffff") @db.Char(16)
   user        user    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_settings_user")
 
