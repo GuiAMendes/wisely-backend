@@ -9,25 +9,32 @@ import type {
   HttpMethod,
   Route,
 } from "../../../../../infra/api/express/routes";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 // Presenter
 import { presenter } from "./CreateSettings.presenter";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 export class CreateSettingsController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly createSettingsUseCase: CreateSettingsUseCase
+    private readonly createSettingsUseCase: CreateSettingsUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
-  public static create(createSettingsUseCase: CreateSettingsUseCase) {
+  public static create(
+    createSettingsUseCase: CreateSettingsUseCase,
+    tokenService: TokenProvider
+  ) {
     return new CreateSettingsController(
       "/:id/settings",
       "post",
-      createSettingsUseCase
+      createSettingsUseCase,
+      tokenService
     );
   }
 
@@ -98,6 +105,20 @@ export class CreateSettingsController implements Route {
 
   getHandler() {
     return async (request: Request, response: Response) => {
+      const authOk = await new Promise<boolean>((resolve) => {
+        ensureAuthenticated(
+          request,
+          response,
+          (err) => {
+            if (err) return resolve(false);
+            resolve(true);
+          },
+          this.tokenService
+        );
+      });
+
+      if (!authOk) return;
+
       const { id: idUser } = request.params;
 
       if (!idUser) {
