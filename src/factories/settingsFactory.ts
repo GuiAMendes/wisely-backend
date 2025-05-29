@@ -7,6 +7,8 @@ import { CreateSettingsUseCase } from "../application/use-cases/settings/create/
 
 import { FindByUserSettingsController } from "../presentation/controllers/express/settings/findByUser/FindByUserSettings.controller";
 import { FindByUserSettingsUseCase } from "../application/use-cases/settings/findByUser/FindByUserSettings.usecase";
+import { UpdateSettingsController } from "../presentation/controllers/express/settings/update/UpdateSettings.controller";
+import { UpdateSettingsUseCase } from "../application/use-cases/settings/update/UpdateSettings.usecase";
 
 export function createSettingsControllers() {
   const settingsRepository = SettingsRepositoryPrisma.with(prisma);
@@ -21,5 +23,10 @@ export function createSettingsControllers() {
     jwtToken
   );
 
-  return [create, findByUser];
+  const updateSettings = UpdateSettingsController.create(
+    UpdateSettingsUseCase.create(settingsRepository),
+    jwtToken
+  );
+
+  return [create, findByUser, updateSettings];
 }
