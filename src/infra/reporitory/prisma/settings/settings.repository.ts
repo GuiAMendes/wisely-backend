@@ -32,14 +32,17 @@ export class SettingsRepositoryPrisma implements SettingsGateway {
 
   async updateColorSchema(
     idUser: string,
-    newColorSchema: string
+    newColorSchema: { primaryColor: string; secondaryColor: string }
   ): Promise<void> {
     try {
       await this.prismaClient.settings.update({
         where: {
           id_user: idUser,
         },
-        data: { colorSchema: newColorSchema },
+        data: {
+          primaryColor: newColorSchema.primaryColor,
+          secondaryColor: newColorSchema.secondaryColor,
+        },
       });
     } catch (error) {
       console.error("Failed to update user settings:", error);
@@ -47,7 +50,9 @@ export class SettingsRepositoryPrisma implements SettingsGateway {
     }
   }
 
-  async findByIdUser(idUser: string): Promise<string | null> {
+  async findByIdUser(
+    idUser: string
+  ): Promise<{ primaryColor: string; secondaryColor: string } | null> {
     try {
       const dbUser = await this.prismaClient.user.findUnique({
         where: {
@@ -65,7 +70,10 @@ export class SettingsRepositoryPrisma implements SettingsGateway {
 
       if (!dbSetting) return null;
 
-      return dbSetting.colorSchema;
+      return {
+        primaryColor: dbSetting.primaryColor || "",
+        secondaryColor: dbSetting.secondaryColor || "",
+      };
     } catch (error) {
       if (error instanceof EntityNotFoundError) throw error;
       console.error("Failed to find user by ID:", error);
