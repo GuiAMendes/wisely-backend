@@ -134,7 +134,7 @@ export class FindByUserSettingsController implements Route {
 
         const output = presenter(foundSetting);
 
-        response.status(201).json(output);
+        response.status(200).json(output);
       } catch (error) {
         if (error instanceof UnauthorizedError) {
           response.status(401).json({ error: error.message });
