@@ -82,25 +82,24 @@ model logging {
 }
 
 model progress {
-  id_journey       String    @db.Char(36) @unique
+  id_journey       String    @unique @db.Char(36)
   completed_topics Int?      @default(0)
   total_topics     Int
   updated_at       DateTime? @updatedAt @db.Timestamp(0)
   is_active        Boolean?  @default(true)
   journey          journey   @relation(fields: [id_journey], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_progress_journey")
 
-  @@map("progress")
   @@index([id_journey], map: "fk_progress_journey")
-  @@id([id_journey])
+  @@map("progress")
 }
 
 model settings {
-  id_user     String  @id @db.Char(36)
-  colorSchema String? @default("#ffffff") @db.Char(16)
-  user        user    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_settings_user")
+  id_user        String  @id @db.Char(36)
+  primaryColor   String? @default("#FEDBE2") @db.Char(16)
+  secondaryColor String? @default("#FF6158") @db.Char(16)
+  user           user    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_settings_user")
 
   @@index([id_user], map: "fk_settings_user")
-  @@index([colorSchema], map: "idx_colorSchema")
 }
 
 model share_template {
