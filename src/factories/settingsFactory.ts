@@ -1,4 +1,4 @@
-import { prisma } from "../shared/factory/sharedFactory";
+import { prisma, jwtToken } from "../shared/factory/sharedFactory";
 
 import { SettingsRepositoryPrisma } from "../infra/reporitory/prisma/settings/settings.repository";
 
@@ -9,7 +9,7 @@ export function createSettingsControllers() {
   const settingsRepository = SettingsRepositoryPrisma.with(prisma);
 
   const create = CreateSettingsController.create(
-    CreateSettingsUseCase.create(settingsRepository)
+    CreateSettingsUseCase.create(settingsRepository), jwtToken
   );
 
   return [create];
