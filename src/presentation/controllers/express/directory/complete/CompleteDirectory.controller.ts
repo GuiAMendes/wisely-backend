@@ -1,14 +1,21 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { CompleteDirectoryUseCase } from "../../../../../application/use-cases/directory/complete/CompleteDirectory.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 // Presenter
 import { presenter } from "./CompleteDirectory.presenter";
+
+// Middleware
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
@@ -17,16 +24,27 @@ export class CompleteDirectoryController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly completeDirectoryUseCase: CompleteDirectoryUseCase
+    private readonly completeDirectoryUseCase: CompleteDirectoryUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
-  public static create(completeDirectoryUseCase: CompleteDirectoryUseCase) {
+  public static create(
+    completeDirectoryUseCase: CompleteDirectoryUseCase,
+    tokenService: TokenProvider
+  ) {
     return new CompleteDirectoryController(
       "/directory/:id/complete",
       "patch",
-      completeDirectoryUseCase
+      completeDirectoryUseCase,
+      tokenService
     );
   }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
+  }
+
   /**
    * @swagger
    * /directory/{id}/complete:
@@ -79,15 +97,7 @@ export class CompleteDirectoryController implements Route {
    *                   type: string
    *                   example: Internal server error
    */
-  /**
-   * @swagger
-   * components:
-   *   securitySchemes:
-   *     bearerAuth:
-   *       type: http
-   *       scheme: bearer
-   *       bearerFormat: JWT
-   */
+
   getHandler() {
     return async (request: Request, response: Response) => {
       const { id: idDirectory } = request.params;

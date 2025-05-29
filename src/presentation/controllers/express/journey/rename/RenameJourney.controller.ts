@@ -1,11 +1,18 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { RenameJourneyUseCase } from "../../../../../application/use-cases/journey/rename/RenameJourney.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
+import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+
+// Middleware
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 // Presenter
 import { presenter } from "./RenameJourney.presenter";
@@ -20,15 +27,25 @@ export class RenameJourneyController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly renameJourneyUseCase: RenameJourneyUseCase
+    private readonly renameJourneyUseCase: RenameJourneyUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
-  public static create(renameJourneyUseCase: RenameJourneyUseCase) {
+  public static create(
+    renameJourneyUseCase: RenameJourneyUseCase,
+    tokenService: TokenProvider
+  ) {
     return new RenameJourneyController(
       "/journey/:id/rename",
       "patch",
-      renameJourneyUseCase
+      renameJourneyUseCase,
+      tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**

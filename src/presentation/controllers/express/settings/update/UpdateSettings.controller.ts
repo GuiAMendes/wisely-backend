@@ -1,5 +1,5 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { UpdateSettingsUseCase } from "../../../../../application/use-cases/settings/update/UpdateSettings.usecase";
@@ -36,6 +36,11 @@ export class UpdateSettingsController implements Route {
       updateSettingsUseCase,
       tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**
@@ -92,20 +97,6 @@ export class UpdateSettingsController implements Route {
 
   getHandler() {
     return async (request: Request, response: Response) => {
-      const authOk = await new Promise<boolean>((resolve) => {
-        ensureAuthenticated(
-          request,
-          response,
-          (err) => {
-            if (err) return resolve(false);
-            resolve(true);
-          },
-          this.tokenService
-        );
-      });
-
-      if (!authOk) return;
-
       const { id: idUser } = request.params;
       const { colorSchema } = request.body;
 

@@ -1,11 +1,14 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { ListAllDirectoriesUseCase } from "../../../../../application/use-cases/directory/listAll/ListAllDirectories.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
 
 // Presenter
 import { presenter } from "./ListAllDirectories.presenter";
@@ -15,7 +18,7 @@ import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
 
 // Validator
 import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 export class ListAllDirectoriesController implements Route {
   private constructor(
@@ -35,6 +38,11 @@ export class ListAllDirectoriesController implements Route {
       listAllDirectoriesUseCase,
       tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**
@@ -82,31 +90,9 @@ export class ListAllDirectoriesController implements Route {
    *       500:
    *         description: Erro interno do servidor
    */
-  /**
-   * @swagger
-   * components:
-   *   securitySchemes:
-   *     bearerAuth:
-   *       type: http
-   *       scheme: bearer
-   *       bearerFormat: JWT
-   */
 
   getHandler() {
     return async (request: Request, response: Response) => {
-      const authOk = await new Promise<boolean>((resolve) => {
-        ensureAuthenticated(
-          request,
-          response,
-          (err) => {
-            if (err) return resolve(false);
-            resolve(true);
-          },
-          this.tokenService
-        );
-      });
-
-      if (!authOk) return;
       const { id: idUser } = request.params;
 
       try {

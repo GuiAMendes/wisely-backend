@@ -1,11 +1,18 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { DeactivateJourneyUseCase } from "../../../../../application/use-cases/journey/deactivate/DeactivateJourney.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
+import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+
+// Middleware
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 // Presenter
 import { presenter } from "./DeactivateJourney.presenter";
@@ -17,15 +24,25 @@ export class DeactivateJourneyController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly deactivateJourneyUseCase: DeactivateJourneyUseCase
+    private readonly deactivateJourneyUseCase: DeactivateJourneyUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
-  public static create(deactivateJourneyUseCase: DeactivateJourneyUseCase) {
+  public static create(
+    deactivateJourneyUseCase: DeactivateJourneyUseCase,
+    tokenService: TokenProvider
+  ) {
     return new DeactivateJourneyController(
       "/journey/:id/deactivate",
       "patch",
-      deactivateJourneyUseCase
+      deactivateJourneyUseCase,
+      tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**

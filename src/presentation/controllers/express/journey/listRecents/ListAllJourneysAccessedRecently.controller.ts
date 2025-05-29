@@ -1,11 +1,14 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { ListAllJourneyAccessedRecentlyUseCase } from "../../../../../application/use-cases/journey/listRecents/ListAllJourneyAccessedRecently.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
 
 // Presenter
 import { presenter } from "./ListAllJourneyAccessedRecently.presenter";
@@ -15,7 +18,7 @@ import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
 
 // Validator
 import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 export class ListAllJourneyAccessedRecentlyController implements Route {
   private constructor(
@@ -35,6 +38,11 @@ export class ListAllJourneyAccessedRecentlyController implements Route {
       listAllJourneyAccessedRecentlyUseCase,
       tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**
@@ -104,19 +112,6 @@ export class ListAllJourneyAccessedRecentlyController implements Route {
 
   getHandler() {
     return async (request: Request, response: Response) => {
-      const authOk = await new Promise<boolean>((resolve) => {
-        ensureAuthenticated(
-          request,
-          response,
-          (err) => {
-            if (err) return resolve(false);
-            resolve(true);
-          },
-          this.tokenService
-        );
-      });
-
-      if (!authOk) return;
       const { id: idDirectory } = request.params;
 
       try {

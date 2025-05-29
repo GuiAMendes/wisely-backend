@@ -1,11 +1,18 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { CompleteDirectoryUseCase } from "../../../../../application/use-cases/directory/complete/CompleteDirectory.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+
+/// Middleware
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 // Presenter
 import { presenter } from "./DeactivateDirectory.presenter";
@@ -18,16 +25,27 @@ export class DeactivateDirectoryController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly deactivateDirectoryUseCase: DeactivateDirectoryUseCase
+    private readonly deactivateDirectoryUseCase: DeactivateDirectoryUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
-  public static create(deactivateDirectoryUseCase: DeactivateDirectoryUseCase) {
+  public static create(
+    deactivateDirectoryUseCase: DeactivateDirectoryUseCase,
+    tokenService: TokenProvider
+  ) {
     return new DeactivateDirectoryController(
       "/directory/:id/deactivate",
       "patch",
-      deactivateDirectoryUseCase
+      deactivateDirectoryUseCase,
+      tokenService
     );
   }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
+  }
+
   /**
    * @swagger
    * /directory/{id}/deactivate:
@@ -80,15 +98,7 @@ export class DeactivateDirectoryController implements Route {
    *                   type: string
    *                   example: Internal server error
    */
-  /**
-   * @swagger
-   * components:
-   *   securitySchemes:
-   *     bearerAuth:
-   *       type: http
-   *       scheme: bearer
-   *       bearerFormat: JWT
-   */
+
   getHandler() {
     return async (request: Request, response: Response) => {
       const { id: idDirectory } = request.params;

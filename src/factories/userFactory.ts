@@ -33,7 +33,8 @@ export function createUserControllers() {
   );
 
   const renameUser = RenameUserController.create(
-    RenameUserUseCase.create(userRepository)
+    RenameUserUseCase.create(userRepository),
+    jwtToken
   );
 
   return [authUser, createUser, renameUser];

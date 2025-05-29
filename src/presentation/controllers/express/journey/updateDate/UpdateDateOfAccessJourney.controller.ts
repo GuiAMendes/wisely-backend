@@ -1,33 +1,46 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { UpdateDateOfAccessJourneyUseCase } from "../../../../../application/use-cases/journey/updateDateOfAccess/UpdateDateOfAccessDirectory.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
 
 // Presenter
 import { presenter } from "./UpdateDateOfAccessJourney.presenter";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
+import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 export class UpdateDateOfAccessJourneyController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly updateDateOfAccessUseCase: UpdateDateOfAccessJourneyUseCase
+    private readonly updateDateOfAccessUseCase: UpdateDateOfAccessJourneyUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
   public static create(
-    updateDateOfAccessUseCase: UpdateDateOfAccessJourneyUseCase
+    updateDateOfAccessUseCase: UpdateDateOfAccessJourneyUseCase,
+    tokenService: TokenProvider
   ) {
     return new UpdateDateOfAccessJourneyController(
       "/journey/:id/updateLastAccess",
       "patch",
-      updateDateOfAccessUseCase
+      updateDateOfAccessUseCase,
+      tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**

@@ -1,14 +1,21 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { RenameUserUseCase } from "../../../../../application/use-cases/user/rename/RenameUser.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 // Presenter
 import { presenter } from "./RenameUser.presenter";
+
+// Middleware
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 // Validator
 import { isSafe } from "../../../../../domain/validator/user";
@@ -16,19 +23,30 @@ import { isSafe } from "../../../../../domain/validator/user";
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
 
+
 export class RenameUserController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly renameUserUseCase: RenameUserUseCase
+    private readonly renameUserUseCase: RenameUserUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
-  public static create(renameUserUseCase: RenameUserUseCase) {
+  public static create(
+    renameUserUseCase: RenameUserUseCase,
+    tokenService: TokenProvider
+  ) {
     return new RenameUserController(
       "/user/:id/rename",
       "patch",
-      renameUserUseCase
+      renameUserUseCase,
+      tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**

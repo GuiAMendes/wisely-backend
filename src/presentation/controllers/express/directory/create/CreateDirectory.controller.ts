@@ -1,11 +1,14 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { CreateDirectoryUseCase } from "../../../../../application/use-cases/directory/create/CreateDirectory.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
 
 // Presenter
 import { presenter } from "./CreateDirectory.presenter";
@@ -16,7 +19,7 @@ import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
 // Validator
 import { isSafe } from "../../../../../shared/validators";
 import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 export class CreateDirectoryController implements Route {
   private constructor(
@@ -36,6 +39,11 @@ export class CreateDirectoryController implements Route {
       createDirectoryUseCase,
       tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**
@@ -92,31 +100,9 @@ export class CreateDirectoryController implements Route {
    *       500:
    *         description: Erro interno do servidor
    */
-  /**
-   * @swagger
-   * components:
-   *   securitySchemes:
-   *     bearerAuth:
-   *       type: http
-   *       scheme: bearer
-   *       bearerFormat: JWT
-   */
+
   getHandler() {
     return async (request: Request, response: Response) => {
-      const authOk = await new Promise<boolean>((resolve) => {
-        ensureAuthenticated(
-          request,
-          response,
-          (err) => {
-            if (err) return resolve(false);
-            resolve(true);
-          },
-          this.tokenService
-        );
-      });
-
-      if (!authOk) return;
-
       const { name, isTemplate } = request.body;
       const { id: idUser } = request.params;
 

@@ -54,19 +54,23 @@ export function createJourneyControllers() {
   );
 
   const updateLastAccess = UpdateDateOfAccessJourneyController.create(
-    UpdateDateOfAccessJourneyUseCase.create(journeyRepository)
+    UpdateDateOfAccessJourneyUseCase.create(journeyRepository),
+    jwtToken
   );
 
   const markAsComplete = CompleteJourneyController.create(
-    CompleteJourneyUseCase.create(journeyRepository)
+    CompleteJourneyUseCase.create(journeyRepository),
+    jwtToken
   );
 
   const deactivateDirectory = DeactivateJourneyController.create(
-    DeactivateJourneyUseCase.create(journeyRepository)
+    DeactivateJourneyUseCase.create(journeyRepository),
+    jwtToken
   );
 
   const rename = RenameJourneyController.create(
-    RenameJourneyUseCase.create(journeyRepository)
+    RenameJourneyUseCase.create(journeyRepository),
+    jwtToken
   );
 
   return [

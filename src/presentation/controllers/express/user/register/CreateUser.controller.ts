@@ -9,8 +9,11 @@ import { CreateUserUseCase } from "../../../../../application/use-cases/user/cre
 
 // Interfaces
 import { Cryptation } from "../../../../../infra/services/cryptation/interfaces/Cryptation.interfaces";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
 
 // Presenter
 import { presenter } from "./CreateUser.presenter";
