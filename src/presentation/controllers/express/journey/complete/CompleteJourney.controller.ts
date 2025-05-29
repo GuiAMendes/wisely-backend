@@ -1,11 +1,18 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { CompleteJourneyUseCase } from "../../../../../application/use-cases/journey/complete/CompleteJourney.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
+import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+
+// Middleware
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 // Presenter
 import { presenter } from "./CompleteJourney.presenter";
@@ -17,15 +24,25 @@ export class CompleteJourneyController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly completeJourneyUseCase: CompleteJourneyUseCase
+    private readonly completeJourneyUseCase: CompleteJourneyUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
-  public static create(completeJourneyUseCase: CompleteJourneyUseCase) {
+  public static create(
+    completeJourneyUseCase: CompleteJourneyUseCase,
+    tokenService: TokenProvider
+  ) {
     return new CompleteJourneyController(
       "/journey/:id/complete",
       "patch",
-      completeJourneyUseCase
+      completeJourneyUseCase,
+      tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**

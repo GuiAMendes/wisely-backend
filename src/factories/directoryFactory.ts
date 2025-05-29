@@ -49,11 +49,13 @@ export function createDirectoryControllers() {
   );
 
   const rename = RenameDirectoryController.create(
-    RenameDirectoryUseCase.create(directoryRepository)
+    RenameDirectoryUseCase.create(directoryRepository),
+    jwtToken
   );
 
   const updateLastAccess = UpdateDateOfAccessDirectoryController.create(
-    UpdateDateOfAccessDirectoryUseCase.create(directoryRepository)
+    UpdateDateOfAccessDirectoryUseCase.create(directoryRepository),
+    jwtToken
   );
 
   const findByName = FindByNameDirectoriesController.create(
@@ -62,11 +64,13 @@ export function createDirectoryControllers() {
   );
 
   const markAsComplete = CompleteDirectoryController.create(
-    CompleteDirectoryUseCase.create(directoryRepository)
+    CompleteDirectoryUseCase.create(directoryRepository),
+    jwtToken
   );
 
   const deactivateDirectory = DeactivateDirectoryController.create(
-    DeactivateDirectoryUseCase.create(directoryRepository)
+    DeactivateDirectoryUseCase.create(directoryRepository),
+    jwtToken
   );
 
   return [

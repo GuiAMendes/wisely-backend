@@ -3,7 +3,7 @@ interface TokenRequest {
   userId: string;
 }
 
-import { TokenProvider } from "../../services/token/interfaces/token.interfaces";
+import type { TokenProvider } from "../../services/token/interfaces/token.interfaces";
 
 // Constants
 import { EXPIRES } from "./constants.ts/token.constants";

@@ -2,38 +2,38 @@
 import { NextFunction, Request, Response } from "express";
 
 // Use case
-import { UpdateDateOfAccessJourneyUseCase } from "../../../../../application/use-cases/journey/updateDateOfAccess/UpdateDateOfAccessDirectory.usecase";
+import { UpdateSettingsUseCase } from "../../../../../application/use-cases/settings/update/UpdateSettings.usecase";
 
 // Interfaces
 import type {
   HttpMethod,
   Route,
 } from "../../../../../infra/api/express/routes";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 // Presenter
-import { presenter } from "./UpdateDateOfAccessJourney.presenter";
+import { presenter } from "./UpdateSettings.presenter";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
-export class UpdateDateOfAccessJourneyController implements Route {
+export class UpdateSettingsController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly updateDateOfAccessUseCase: UpdateDateOfAccessJourneyUseCase,
+    private readonly updateSettingsUseCase: UpdateSettingsUseCase,
     private readonly tokenService: TokenProvider
   ) {}
 
   public static create(
-    updateDateOfAccessUseCase: UpdateDateOfAccessJourneyUseCase,
+    updateSettingsUseCase: UpdateSettingsUseCase,
     tokenService: TokenProvider
   ) {
-    return new UpdateDateOfAccessJourneyController(
-      "/journey/:id/updateLastAccess",
+    return new UpdateSettingsController(
+      "/:id/settings",
       "patch",
-      updateDateOfAccessUseCase,
+      updateSettingsUseCase,
       tokenService
     );
   }
@@ -45,64 +45,73 @@ export class UpdateDateOfAccessJourneyController implements Route {
 
   /**
    * @swagger
-   * /journey/{id}/updateLastAccess:
+   * /{id}/settings:
    *   patch:
-   *     summary: Atualiza a data do último acesso de uma jornada
-   *     tags: [Journey]
+   *     summary: Atualiza as configurações de um usuário autenticado
+   *     tags: [Settings]
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ID da jornada cujo último acesso será atualizado
+   *         description: ID do usuário
    *         schema:
    *           type: string
    *           format: uuid
    *           example: 123e4567-e89b-12d3-a456-426614174000
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               colorSchema:
+   *                 type: object
+   *                 properties:
+   *                   primaryColor:
+   *                     type: string
+   *                     example: "#FF6158"
+   *                   secondaryColor:
+   *                     type: string
+   *                     example: "#FEDBE2"
    *     responses:
    *       200:
-   *         description: Data de acesso da jornada atualizada com sucesso
+   *         description: Configurações atualizadas com sucesso
    *         content:
    *           application/json:
    *             schema:
    *               type: object
    *               properties:
-   *                 idJourney:
+   *                 status:
    *                   type: string
-   *                   example: 123e4567-e89b-12d3-a456-426614174000
+   *                   example: Success
+   *       400:
+   *         description: ID do usuário ausente
    *       401:
-   *         description: Não autorizado (acesso negado)
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 error:
-   *                   type: string
-   *                   example: Unauthorized access
+   *         description: Não autorizado (token inválido ou ausente)
    *       500:
    *         description: Erro interno do servidor
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 error:
-   *                   type: string
-   *                   example: Internal server error
    */
 
   getHandler() {
     return async (request: Request, response: Response) => {
-      const { id: idJourney } = request.params;
+      const { id: idUser } = request.params;
+      const { colorSchema } = request.body;
+
+      if (!idUser) {
+        response.status(400).json({ error: "Missing user id." });
+        return;
+      }
 
       try {
-        const updatedDirectory = await this.updateDateOfAccessUseCase.execute({
-          idJourney,
+        const updateSetting = await this.updateSettingsUseCase.execute({
+          idUser,
+          colorSchema,
         });
 
-        const output = presenter({
-          idJourney: updatedDirectory.idJourney,
-        });
+        const output = presenter(updateSetting);
 
         response.status(200).json(output);
       } catch (error) {

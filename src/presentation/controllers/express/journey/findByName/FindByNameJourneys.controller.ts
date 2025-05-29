@@ -1,11 +1,14 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { FindByNameDirectoriesUseCase } from "../../../../../application/use-cases/directory/findByName/FindByNameDirectories.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
 
 // Presenter
 import { presenter } from "./FindByNameJourneys.presenter";
@@ -15,7 +18,7 @@ import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
 
 // Validator
 import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 import { isSafe } from "../../../../../shared/validators";
 import { FindByNameJourneysUseCase } from "../../../../../application/use-cases/journey/findByName/FindByNameJourneys.usecase";
 
@@ -37,6 +40,11 @@ export class FindByNameJourneysController implements Route {
       findByNameJourneysUseCase,
       tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**
@@ -123,19 +131,6 @@ export class FindByNameJourneysController implements Route {
 
   getHandler() {
     return async (request: Request, response: Response) => {
-      const authOk = await new Promise<boolean>((resolve) => {
-        ensureAuthenticated(
-          request,
-          response,
-          (err) => {
-            if (err) return resolve(false);
-            resolve(true);
-          },
-          this.tokenService
-        );
-      });
-
-      if (!authOk) return;
       const { id: idDirectory } = request.params;
       const { name: journeyName } = request.query;
 

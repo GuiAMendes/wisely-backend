@@ -2,38 +2,38 @@
 import { NextFunction, Request, Response } from "express";
 
 // Use case
-import { UpdateDateOfAccessJourneyUseCase } from "../../../../../application/use-cases/journey/updateDateOfAccess/UpdateDateOfAccessDirectory.usecase";
+import { FindByUserSettingsUseCase } from "../../../../../application/use-cases/settings/findByUser/FindByUserSettings.usecase";
 
 // Interfaces
 import type {
   HttpMethod,
   Route,
 } from "../../../../../infra/api/express/routes";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 // Presenter
-import { presenter } from "./UpdateDateOfAccessJourney.presenter";
+import { presenter } from "./FindByUserSettings.presenter";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
-export class UpdateDateOfAccessJourneyController implements Route {
+export class FindByUserSettingsController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly updateDateOfAccessUseCase: UpdateDateOfAccessJourneyUseCase,
+    private readonly findByUserSettingsUseCase: FindByUserSettingsUseCase,
     private readonly tokenService: TokenProvider
   ) {}
 
   public static create(
-    updateDateOfAccessUseCase: UpdateDateOfAccessJourneyUseCase,
+    findByUserSettingsUseCase: FindByUserSettingsUseCase,
     tokenService: TokenProvider
   ) {
-    return new UpdateDateOfAccessJourneyController(
-      "/journey/:id/updateLastAccess",
-      "patch",
-      updateDateOfAccessUseCase,
+    return new FindByUserSettingsController(
+      "/:id/settings",
+      "get",
+      findByUserSettingsUseCase,
       tokenService
     );
   }
@@ -45,32 +45,50 @@ export class UpdateDateOfAccessJourneyController implements Route {
 
   /**
    * @swagger
-   * /journey/{id}/updateLastAccess:
-   *   patch:
-   *     summary: Atualiza a data do último acesso de uma jornada
-   *     tags: [Journey]
+   * /{id}/settings:
+   *   get:
+   *     summary: Retorna as configurações do usuário autenticado
+   *     tags: [Settings]
+   *     security:
+   *       - bearerAuth: []
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ID da jornada cujo último acesso será atualizado
+   *         description: ID do usuário
    *         schema:
    *           type: string
    *           format: uuid
    *           example: 123e4567-e89b-12d3-a456-426614174000
    *     responses:
    *       200:
-   *         description: Data de acesso da jornada atualizada com sucesso
+   *         description: Configurações retornadas com sucesso
    *         content:
    *           application/json:
    *             schema:
    *               type: object
    *               properties:
-   *                 idJourney:
+   *                 idUser:
    *                   type: string
    *                   example: 123e4567-e89b-12d3-a456-426614174000
+   *                 settings:
+   *                   type: object
+   *                   example:
+   *                     primaryColor: "#FEDBE2"
+   *                     secondaryColor: "#FF6158"
+   *                     notifications: true
+   *       400:
+   *         description: ID do usuário ausente
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 error:
+   *                   type: string
+   *                   example: Missing user id.
    *       401:
-   *         description: Não autorizado (acesso negado)
+   *         description: Não autorizado (token inválido ou ausente)
    *         content:
    *           application/json:
    *             schema:
@@ -93,16 +111,19 @@ export class UpdateDateOfAccessJourneyController implements Route {
 
   getHandler() {
     return async (request: Request, response: Response) => {
-      const { id: idJourney } = request.params;
+      const { id: idUser } = request.params;
+
+      if (!idUser) {
+        response.status(400).json({ error: "Missing user id." });
+        return;
+      }
 
       try {
-        const updatedDirectory = await this.updateDateOfAccessUseCase.execute({
-          idJourney,
+        const foundSetting = await this.findByUserSettingsUseCase.execute({
+          idUser,
         });
 
-        const output = presenter({
-          idJourney: updatedDirectory.idJourney,
-        });
+        const output = presenter(foundSetting);
 
         response.status(200).json(output);
       } catch (error) {

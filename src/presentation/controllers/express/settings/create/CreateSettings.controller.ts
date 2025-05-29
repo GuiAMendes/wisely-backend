@@ -1,5 +1,5 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { CreateSettingsUseCase } from "../../../../../application/use-cases/settings/create/CreateSettings.usecase";
@@ -9,26 +9,38 @@ import type {
   HttpMethod,
   Route,
 } from "../../../../../infra/api/express/routes";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 // Presenter
 import { presenter } from "./CreateSettings.presenter";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 export class CreateSettingsController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly createSettingsUseCase: CreateSettingsUseCase
+    private readonly createSettingsUseCase: CreateSettingsUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
-  public static create(createSettingsUseCase: CreateSettingsUseCase) {
+  public static create(
+    createSettingsUseCase: CreateSettingsUseCase,
+    tokenService: TokenProvider
+  ) {
     return new CreateSettingsController(
       "/:id/settings",
       "post",
-      createSettingsUseCase
+      createSettingsUseCase,
+      tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**

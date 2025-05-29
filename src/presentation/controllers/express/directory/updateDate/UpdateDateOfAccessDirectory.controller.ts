@@ -1,11 +1,18 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { UpdateDateOfAccessDirectoryUseCase } from "../../../../../application/use-cases/directory/updateDateOfAccess/UpdateDateOfAccessDirectory.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+
+// Middleware
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 // Presenter
 import { presenter } from "./UpdateDateOfAccessDirectory.presenter";
@@ -17,17 +24,25 @@ export class UpdateDateOfAccessDirectoryController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly updateDateOfAccessUseCase: UpdateDateOfAccessDirectoryUseCase
+    private readonly updateDateOfAccessUseCase: UpdateDateOfAccessDirectoryUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
   public static create(
-    updateDateOfAccessUseCase: UpdateDateOfAccessDirectoryUseCase
+    updateDateOfAccessUseCase: UpdateDateOfAccessDirectoryUseCase,
+    tokenService: TokenProvider
   ) {
     return new UpdateDateOfAccessDirectoryController(
       "/directory/:id/updateLastAccess",
       "patch",
-      updateDateOfAccessUseCase
+      updateDateOfAccessUseCase,
+      tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**
@@ -80,15 +95,7 @@ export class UpdateDateOfAccessDirectoryController implements Route {
    *                   type: string
    *                   example: Internal server error
    */
-  /**
-   * @swagger
-   * components:
-   *   securitySchemes:
-   *     bearerAuth:
-   *       type: http
-   *       scheme: bearer
-   *       bearerFormat: JWT
-   */
+
   getHandler() {
     return async (request: Request, response: Response) => {
       const { id: idDirectory } = request.params;

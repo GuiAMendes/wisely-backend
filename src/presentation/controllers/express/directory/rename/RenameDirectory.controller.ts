@@ -1,34 +1,51 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { RenameDirectoryUseCase } from "../../../../../application/use-cases/directory/rename/RenameDirectory.usecase";
 
 // Interfaces
-import { HttpMethod, Route } from "../../../../../infra/api/express/routes";
+import type {
+  HttpMethod,
+  Route,
+} from "../../../../../infra/api/express/routes";
+import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+
+// Middleware
+import { ensureAuthenticated } from "../../../../middlewares/auth/ensureAuthenticated";
 
 // Presenter
+import { presenter } from "./RenameDirectory.presenter";
 
 // Validator
+import { isSafe } from "../../../../../shared/validators";
 
 // Error
 import { UnauthorizedError } from "../../../../errors/UnauthorizedError";
-import { isSafe } from "../../../../../shared/validators";
-import { presenter } from "./RenameDirectory.presenter";
 
 export class RenameDirectoryController implements Route {
   private constructor(
     private readonly path: string,
     private readonly method: HttpMethod,
-    private readonly renameDirectoryUseCase: RenameDirectoryUseCase
+    private readonly renameDirectoryUseCase: RenameDirectoryUseCase,
+    private readonly tokenService: TokenProvider
   ) {}
 
-  public static create(renameDirectoryUseCase: RenameDirectoryUseCase) {
+  public static create(
+    renameDirectoryUseCase: RenameDirectoryUseCase,
+    tokenService: TokenProvider
+  ) {
     return new RenameDirectoryController(
       "/directory/:id/rename",
       "patch",
-      renameDirectoryUseCase
+      renameDirectoryUseCase,
+      tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**

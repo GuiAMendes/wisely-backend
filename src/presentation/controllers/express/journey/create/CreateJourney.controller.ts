@@ -1,5 +1,5 @@
 // External libraries
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 // Use case
 import { CreateJourneyUseCase } from "../../../../../application/use-cases/journey/create/CreateJourney.usecase";
@@ -9,7 +9,7 @@ import type {
   HttpMethod,
   Route,
 } from "../../../../../infra/api/express/routes";
-import { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
+import type { TokenProvider } from "../../../../../infra/services/token/interfaces/token.interfaces";
 
 // Presenter
 import { presenter } from "./CreateJourney.presenter";
@@ -41,6 +41,11 @@ export class CreateJourneyController implements Route {
       createJourneyUseCase,
       tokenService
     );
+  }
+
+  getMiddlewares(): (req: Request, res: Response, next: NextFunction) => void {
+    return (req: Request, res: Response, next: NextFunction) =>
+      ensureAuthenticated(req, res, next, this.tokenService);
   }
 
   /**
@@ -127,20 +132,6 @@ export class CreateJourneyController implements Route {
 
   getHandler() {
     return async (request: Request, response: Response) => {
-      const authOk = await new Promise<boolean>((resolve) => {
-        ensureAuthenticated(
-          request,
-          response,
-          (err) => {
-            if (err) return resolve(false);
-            resolve(true);
-          },
-          this.tokenService
-        );
-      });
-
-      if (!authOk) return;
-
       const { name, typeOfJourney } = request.body;
       const { id: idDirectory } = request.params;
 
