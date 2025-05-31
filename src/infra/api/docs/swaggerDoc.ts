@@ -29,6 +29,10 @@ export const swaggerSpec = swaggerJSDoc({
         name: "Settings",
         description: "Gerenciamento de configurações da UI",
       },
+      {
+        name: "Progress",
+        description: "Gerenciamento de progressão",
+      },
     ],
     components: {
       securitySchemes: {

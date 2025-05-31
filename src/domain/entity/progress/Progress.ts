@@ -3,7 +3,6 @@ import { ProgressValidator } from "../../validator/progress/progress.validator";
 
 // Types
 export interface ProgressProps {
-  id: string;
   journeyId: string;
   completedTopics: number;
   totalTopics: number;
@@ -11,24 +10,14 @@ export interface ProgressProps {
   isActive: boolean;
 }
 
-// Interfaces
-import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
-
 export class Progress {
   private constructor(readonly props: ProgressProps) {}
 
-  public static create(props: {
-    journeyId: string;
-    totalTopics: number;
-    uuidGenerator: UuidGenerator;
-  }): Progress {
-    ProgressValidator.ensureTotalTopicsValid(props.totalTopics);
-
+  public static create(props: { journeyId: string }): Progress {
     return new Progress({
-      id: props.uuidGenerator.generate(),
       journeyId: props.journeyId,
       completedTopics: 0,
-      totalTopics: props.totalTopics,
+      totalTopics: 0,
       updatedAt: null,
       isActive: true,
     });
@@ -44,7 +33,8 @@ export class Progress {
     return new Progress(props);
   }
 
-  public updateCompletedTopics(count: number): Progress {
+  public updateCompletedTopics(): Progress {
+    const count = this.props.totalTopics + 1;
     ProgressValidator.ensureCompletedNotExceedsTotal(
       count,
       this.props.totalTopics
@@ -68,10 +58,6 @@ export class Progress {
       ...this.props,
       isActive: true,
     });
-  }
-
-  public get id() {
-    return this.props.id;
   }
 
   public get journeyId() {

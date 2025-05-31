@@ -1,15 +1,19 @@
+// External library
 import dotenv from "dotenv";
-dotenv.config();
-
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./infra/api/docs/swaggerDoc";
 
+// InfraStructure
+import { swaggerSpec } from "./infra/api/docs/swaggerDoc";
 import { ApiExpress } from "./infra/api/express/api.express";
+
+// Factory
 import { createUserControllers } from "./factories/userFactory";
 import { createDirectoryControllers } from "./factories/directoryFactory";
 import { createJourneyControllers } from "./factories/journeyFactory";
 import { createSettingsControllers } from "./factories/settingsFactory";
+import { createprogressControllers } from "./factories/progressFactory";
 
+dotenv.config();
 const PORT = Number(process.env.PORT) || 3333;
 
 function runApplication() {
@@ -18,6 +22,7 @@ function runApplication() {
     ...createDirectoryControllers(),
     ...createJourneyControllers(),
     ...createSettingsControllers(),
+    ...createprogressControllers(),
   ];
 
   const API = ApiExpress.create(controllers);
