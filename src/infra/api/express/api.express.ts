@@ -16,7 +16,7 @@ export class ApiExpress implements API {
       cors({
         origin: "*",
         methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
-        credentials: true,
+        // credentials: true,
       })
     );
     this.addRoutes(routes);
