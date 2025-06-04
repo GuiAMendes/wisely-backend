@@ -37,7 +37,8 @@ describe("TopicValidator", () => {
 
   describe("ensureTopicNameIsWithinLimit", () => {
     it("should throw error for name exceeding maximum", () => {
-      const longName = "12345678901"; 
+      const longName =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vel enim elementum, fringilla leo a, maxi";
       expect(() =>
         TopicValidator.ensureTopicNameIsWithinLimit(longName)
       ).toThrow(

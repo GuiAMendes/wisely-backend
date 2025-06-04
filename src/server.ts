@@ -12,6 +12,7 @@ import { createDirectoryControllers } from "./factories/directoryFactory";
 import { createJourneyControllers } from "./factories/journeyFactory";
 import { createSettingsControllers } from "./factories/settingsFactory";
 import { createprogressControllers } from "./factories/progressFactory";
+import { createTopicControllers } from "./factories/topicFactory";
 
 dotenv.config();
 const PORT = Number(process.env.PORT) || 3333;
@@ -23,6 +24,7 @@ function runApplication() {
     ...createJourneyControllers(),
     ...createSettingsControllers(),
     ...createprogressControllers(),
+    ...createTopicControllers(),
   ];
 
   const API = ApiExpress.create(controllers);
