@@ -2,10 +2,10 @@
 import { Summary } from "../../entity/summary/Summary";
 
 export interface SummaryGateway {
-  create(Summary: Summary): Promise<void>;
-  update(Summary: Summary): Promise<void>;
+  create(summary: Summary): Promise<void>;
   findById(id: string): Promise<Summary | null>;
   findByTopic(topicId: string): Promise<Summary | null>;
-  complete(id: string): Promise<void>;
+  updateTitle(id: string, newTitle: string): Promise<void>;
+  updateContent(id: string, newContent: string): Promise<void>;
   deactivate(id: string): Promise<void>;
 }

@@ -33,7 +33,9 @@ describe("SummaryValidator", () => {
   describe("ensureTitleWithinLimit", () => {
     it("should throw error for title longer than maximum", () => {
       expect(() =>
-        SummaryValidator.ensureTitleWithinLimit("12345678901")
+        SummaryValidator.ensureTitleWithinLimit(
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vel enim elementum, fringilla leo a, maxi"
+        )
       ).toThrow("Título muito longo.");
     });
 
