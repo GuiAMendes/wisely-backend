@@ -227,6 +227,11 @@ export class DirectoryRepositoryPrisma implements DirectoryGateway {
         data: { is_active: false },
       });
 
+      await this.prismaClient.progress.updateMany({
+        where: { id_journey: { in: journeyIds }, is_active: true },
+        data: { is_active: false },
+      });
+
       await this.prismaClient.journey.updateMany({
         where: { id: { in: journeyIds }, is_active: true },
         data: { is_active: false },
