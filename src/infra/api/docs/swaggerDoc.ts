@@ -37,6 +37,10 @@ export const swaggerSpec = swaggerJSDoc({
         name: "Topic",
         description: "Gerenciamento de tópico",
       },
+      {
+        name: "Summary",
+        description: "Gerenciamento de resumo",
+      },
     ],
     components: {
       securitySchemes: {
