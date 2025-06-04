@@ -16,6 +16,8 @@ import { DeactivateTopicController } from "../presentation/controllers/express/t
 import { DeactivateTopicUseCase } from "../application/use-cases/topic/deactivate/DeactivateTopic.usecase";
 import { CompleteTopicController } from "../presentation/controllers/express/topic/complete/CompleteTopic.controller";
 import { CompleteTopicUseCase } from "../application/use-cases/topic/complete/CompleteTopic.usecase";
+import { FindByNameTopicsUseCase } from "../application/use-cases/topic/findByName/FindByNameTopics.usecase";
+import { FindByNameTopicsController } from "../presentation/controllers/express/topic/findByName/FindByNameTopics.controller";
 
 export function createTopicControllers() {
   const topicRepository = TopicRepositoryPrisma.with(prisma);
@@ -27,6 +29,11 @@ export function createTopicControllers() {
 
   const listAll = ListAllTopicsController.create(
     ListAllTopicsUseCase.create(topicRepository),
+    jwtToken
+  );
+
+  const findByName = FindByNameTopicsController.create(
+    FindByNameTopicsUseCase.create(topicRepository),
     jwtToken
   );
 
@@ -45,5 +52,5 @@ export function createTopicControllers() {
     jwtToken
   );
 
-  return [create, listAll, rename, deactivate, complete];
+  return [create, listAll, findByName, rename, deactivate, complete];
 }
