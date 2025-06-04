@@ -199,6 +199,39 @@ export class DirectoryRepositoryPrisma implements DirectoryGateway {
 
       if (!dbDirectory) return;
 
+      const journeys = await this.prismaClient.journey.findMany({
+        where: { id_directory: id, is_active: true },
+        include: { topic: true },
+      });
+
+      const journeyIds = journeys.map((j) => j.id);
+      const topicIds = journeys.flatMap((j) => j.topic.map((t) => t.id));
+
+      await this.prismaClient.file_model.updateMany({
+        where: { id_topic: { in: topicIds }, is_active: true },
+        data: { is_active: false },
+      });
+
+      await this.prismaClient.flashcard.updateMany({
+        where: { id_topic: { in: topicIds }, is_active: true },
+        data: { is_active: false },
+      });
+
+      await this.prismaClient.summary.updateMany({
+        where: { id_topic: { in: topicIds }, is_active: true },
+        data: { is_active: false },
+      });
+
+      await this.prismaClient.topic.updateMany({
+        where: { id: { in: topicIds }, is_active: true },
+        data: { is_active: false },
+      });
+
+      await this.prismaClient.journey.updateMany({
+        where: { id: { in: journeyIds }, is_active: true },
+        data: { is_active: false },
+      });
+
       const deactivatedUser = dbDirectory.deactivate();
 
       await this.prismaClient.directory.update({
