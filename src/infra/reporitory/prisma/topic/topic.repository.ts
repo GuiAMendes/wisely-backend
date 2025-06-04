@@ -162,6 +162,7 @@ export class TopicRepositoryPrisma implements TopicGateway {
         },
         data: {
           is_concluded: completedTopic.isConcluded,
+          completed_at: new Date(),
         },
       });
     } catch (error) {

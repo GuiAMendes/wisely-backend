@@ -14,6 +14,8 @@ import { RenameTopicController } from "../presentation/controllers/express/topic
 import { RenameTopicUseCase } from "../application/use-cases/topic/rename/RenameTopic.usecase";
 import { DeactivateTopicController } from "../presentation/controllers/express/topic/deactivate/DeactivateTopic.controller";
 import { DeactivateTopicUseCase } from "../application/use-cases/topic/deactivate/DeactivateTopic.usecase";
+import { CompleteTopicController } from "../presentation/controllers/express/topic/complete/CompleteTopic.controller";
+import { CompleteTopicUseCase } from "../application/use-cases/topic/complete/CompleteTopic.usecase";
 
 export function createTopicControllers() {
   const topicRepository = TopicRepositoryPrisma.with(prisma);
@@ -38,5 +40,10 @@ export function createTopicControllers() {
     jwtToken
   );
 
-  return [create, listAll, rename, deactivate];
+  const complete = CompleteTopicController.create(
+    CompleteTopicUseCase.create(topicRepository),
+    jwtToken
+  );
+
+  return [create, listAll, rename, deactivate, complete];
 }
