@@ -34,7 +34,7 @@ export class Progress {
   }
 
   public updateCompletedTopics(): Progress {
-    const count = this.props.totalTopics + 1;
+    const count = this.props.completedTopics + 1;
     ProgressValidator.ensureCompletedNotExceedsTotal(
       count,
       this.props.totalTopics
