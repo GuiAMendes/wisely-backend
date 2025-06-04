@@ -10,9 +10,7 @@ import type { JourneyGateway } from "../../../../domain/gateway/journey/journey.
 //  Errors
 import { DatabaseError } from "../../../../presentation/errors/DatabaseError";
 import { EntityNotFoundError } from "../../../../presentation/errors/EntityNotFoundError";
-import {
-  JourneyType,
-} from "../../../../domain/value-object/journey/TypeOfJourney";
+import { JourneyType } from "../../../../domain/value-object/journey/TypeOfJourney";
 
 export class JourneyRepositoryPrisma implements JourneyGateway {
   private constructor(private readonly prismaClient: PrismaClient) {}
@@ -201,6 +199,38 @@ export class JourneyRepositoryPrisma implements JourneyGateway {
       const dbJourney = await this.findById(id);
 
       if (!dbJourney) return;
+
+      const journeys = await this.prismaClient.journey.findMany({
+        where: { id: id, is_active: true },
+        include: { topic: true },
+      });
+
+      const topicIds = journeys.flatMap((j) => j.topic.map((t) => t.id));
+
+      await this.prismaClient.file_model.updateMany({
+        where: { id_topic: { in: topicIds }, is_active: true },
+        data: { is_active: false },
+      });
+
+      await this.prismaClient.flashcard.updateMany({
+        where: { id_topic: { in: topicIds }, is_active: true },
+        data: { is_active: false },
+      });
+
+      await this.prismaClient.summary.updateMany({
+        where: { id_topic: { in: topicIds }, is_active: true },
+        data: { is_active: false },
+      });
+
+      await this.prismaClient.topic.updateMany({
+        where: { id: { in: topicIds }, is_active: true },
+        data: { is_active: false },
+      });
+
+      await this.prismaClient.journey.update({
+        where: { id: id, is_active: true },
+        data: { is_active: false },
+      });
 
       const deactivatedJourney = dbJourney.deactivate();
 
