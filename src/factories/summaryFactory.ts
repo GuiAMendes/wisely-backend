@@ -14,6 +14,8 @@ import { FindByTopicSummaryUseCase } from "../application/use-cases/summary/find
 
 import { RenameTitleOfSummaryController } from "../presentation/controllers/express/summary/renameTitle/RenameTitleOfSummary.controller";
 import { RenameTitleOfSummaryUseCase } from "../application/use-cases/summary/renameTitle/RenameTitleOfSummary.usecase";
+import { UpdateContentOfSummaryController } from "../presentation/controllers/express/summary/updateContent/UpdateContentOfSummary.controller";
+import { UpdateContentOfSummaryUseCase } from "../application/use-cases/summary/updateContent/UpdateContentOfSummary.usecase";
 
 export function createSummaryControllers() {
   const summaryRepository = SummaryRepositoryPrisma.with(prisma);
@@ -33,5 +35,10 @@ export function createSummaryControllers() {
     jwtToken
   );
 
-  return [create, findByTopic, renameTitle];
+  const editContent = UpdateContentOfSummaryController.create(
+    UpdateContentOfSummaryUseCase.create(summaryRepository),
+    jwtToken
+  );
+
+  return [create, findByTopic, renameTitle, editContent];
 }
