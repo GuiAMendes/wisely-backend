@@ -33,6 +33,10 @@ export const swaggerSpec = swaggerJSDoc({
         name: "Progress",
         description: "Gerenciamento de progressão",
       },
+      {
+        name: "Topic",
+        description: "Gerenciamento de tópico",
+      },
     ],
     components: {
       securitySchemes: {
