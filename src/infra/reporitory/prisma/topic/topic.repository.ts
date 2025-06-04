@@ -42,6 +42,7 @@ export class TopicRepositoryPrisma implements TopicGateway {
       const dbTopicList = await this.prismaClient.topic.findMany({
         where: {
           id_journey: idJourney,
+          is_active: true,
           journey: {
             is_active: true,
           },
@@ -80,6 +81,7 @@ export class TopicRepositoryPrisma implements TopicGateway {
       const dbTopicList = await this.prismaClient.topic.findMany({
         where: {
           id_journey: idJourney,
+          is_active: true,
           topic_name: {
             contains: topicName,
           },
@@ -160,6 +162,7 @@ export class TopicRepositoryPrisma implements TopicGateway {
         },
         data: {
           is_concluded: completedTopic.isConcluded,
+          completed_at: new Date(),
         },
       });
     } catch (error) {
