@@ -47,13 +47,12 @@ export class Flashcard {
     );
   }
 
-  public edit(questionContent: string, responseContent: string) {
-    return Flashcard.create({
-      idTopic: this.topicId,
-      questionContent,
-      responseContent,
-      uuidGenerator: this.uuidGenerator,
-    });
+  public editResponse(responseContent: string) {
+    return this.onChange({ response: Response.create(responseContent) });
+  }
+
+  public editQuestion(questionContent: string) {
+    return this.onChange({ question: Question.create(questionContent) });
   }
 
   private onChange(updated: Partial<FlashcardProps>) {
