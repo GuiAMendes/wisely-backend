@@ -41,6 +41,10 @@ export const swaggerSpec = swaggerJSDoc({
         name: "Summary",
         description: "Gerenciamento de resumo",
       },
+      {
+        name: "File",
+        description: "Gerenciamento de arquivos",
+      },
     ],
     components: {
       securitySchemes: {

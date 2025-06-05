@@ -26,10 +26,10 @@ export class FileModelRepositoryPrisma implements FileModelGateway {
       id: fileModel.id,
       id_topic: fileModel.topicId,
       file_name: fileModel.fileName,
-      file_path: fileModel.base64Content,
+      file_path: fileModel.props.filePath.encoded,
       file_type: fileModel.fileType,
       upload_date: fileModel.uploadDate,
-      is_active: fileModel.isActive,
+      is_active: fileModel.isActive || false,
     };
     try {
       await this.prismaClient.file_model.create({
