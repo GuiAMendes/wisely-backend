@@ -38,6 +38,20 @@ export class FileModel {
     });
   }
 
+  public static restore(props: {
+    id: string;
+    topicId: string;
+    fileName: string;
+    fileType: string;
+    filePath: MetaData;
+    uploadDate: Date | null;
+    isActive: boolean;
+  }): FileModel {
+    return new FileModel({
+      ...props,
+    });
+  }
+
   public activate() {
     return new FileModel({
       ...this.props,
