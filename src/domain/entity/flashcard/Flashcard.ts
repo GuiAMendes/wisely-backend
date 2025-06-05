@@ -18,10 +18,7 @@ export interface FlashcardProps {
 import { UuidGenerator } from "../../../infra/services/uuid/interfaces/UuidGenerator.interfaces";
 
 export class Flashcard {
-  private constructor(
-    readonly props: FlashcardProps,
-    private readonly uuidGenerator: UuidGenerator
-  ) {}
+  private constructor(readonly props: FlashcardProps) {}
 
   public static create(props: {
     idTopic: string;
@@ -32,19 +29,20 @@ export class Flashcard {
     const question = Question.create(props.questionContent);
     const response = Response.create(props.responseContent);
 
-    return new Flashcard(
-      {
-        id: props.uuidGenerator.generate(),
-        topicId: props.idTopic,
-        question,
-        response,
-        createdAt: null,
-        updatedAt: null,
-        completedAt: null,
-        isActive: true,
-      },
-      props.uuidGenerator
-    );
+    return new Flashcard({
+      id: props.uuidGenerator.generate(),
+      topicId: props.idTopic,
+      question,
+      response,
+      createdAt: null,
+      updatedAt: null,
+      completedAt: null,
+      isActive: true,
+    });
+  }
+
+  public static restore(props: FlashcardProps) {
+    return new Flashcard({ ...props });
   }
 
   public editResponse(responseContent: string) {
@@ -56,13 +54,10 @@ export class Flashcard {
   }
 
   private onChange(updated: Partial<FlashcardProps>) {
-    return new Flashcard(
-      {
-        ...this.props,
-        ...updated,
-      },
-      this.uuidGenerator
-    );
+    return new Flashcard({
+      ...this.props,
+      ...updated,
+    });
   }
 
   public deactivate() {

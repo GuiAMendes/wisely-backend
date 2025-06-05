@@ -10,6 +10,9 @@ import type { FlashcardGateway } from "../../../../domain/gateway/flashcard/flas
 //  Errors
 import { DatabaseError } from "../../../../presentation/errors/DatabaseError";
 import { EntityNotFoundError } from "../../../../presentation/errors/EntityNotFoundError";
+import { Flashcard } from "../../../../domain/entity/flashcard/Flashcard";
+import { Question } from "../../../../domain/value-object/flashcard/Question";
+import { Response } from "../../../../domain/value-object/flashcard/Response";
 
 export class FlashcardRepositoryPrisma implements FlashcardGateway {
   private constructor(private readonly prismaClient: PrismaClient) {}
@@ -18,284 +21,160 @@ export class FlashcardRepositoryPrisma implements FlashcardGateway {
     return new FlashcardRepositoryPrisma(prismaClient);
   }
 
-  async create(directory: Directory): Promise<void> {
-    const directoryData = {
-      id: directory.id,
-      id_user: directory.idUser,
-      directory_name: directory.directoryName,
-      is_completed: directory.isCompleted,
-      is_active: directory.isActive,
-      is_template: directory.isTemplate,
+  async create(flashcard: Flashcard): Promise<void> {
+    const flashcardData = {
+      id: flashcard.id,
+      id_topic: flashcard.topicId,
+      question: flashcard.questionValue,
+      response: flashcard.responseValue,
+      completed_at: flashcard.completedAt,
+      is_active: flashcard.isActive,
     };
     try {
-      await this.prismaClient.directory.create({
-        data: directoryData,
+      await this.prismaClient.flashcard.create({
+        data: flashcardData,
       });
     } catch (error) {
-      console.error("Failed to create directory:", error);
-      throw new DatabaseError("Database error while creating directory.");
+      console.error("Failed to create flashcard:", error);
+      throw new DatabaseError("Database error while creating flashcard.");
     }
   }
 
-  async findByName(
-    idUser: string,
-    directoryName: string
-  ): Promise<Directory[]> {
+  async findById(id: string): Promise<Flashcard | null> {
     try {
-      const dbDirectoryList = await this.prismaClient.directory.findMany({
-        where: {
-          id_user: idUser,
-          directory_name: {
-            contains: directoryName,
-          },
-          is_active: true,
-        },
-      });
-
-      if (!dbDirectoryList) return [];
-
-      const directoryList = dbDirectoryList.map((dir) => {
-        const directory = Directory.restore({
-          id: dir.id,
-          idUser: dir.id_user,
-          directoryName: dir.directory_name,
-          createdAt: dir.created_at,
-          updatedAt: dir.updated_at,
-          isCompleted: dir.is_completed || false,
-          isActive: dir.is_active || true,
-          isTemplate: dir.is_template || false,
-        });
-        return directory;
-      });
-
-      return directoryList;
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) throw error;
-      console.error("Failed to find directory by name:", error);
-      throw new DatabaseError("Database error while retrieving directory.");
-    }
-  }
-
-  async listAll(idUser: string): Promise<Directory[]> {
-    try {
-      const dbDirectoryList = await this.prismaClient.directory.findMany({
-        where: {
-          id_user: idUser,
-          is_active: true,
-        },
-      });
-
-      if (!dbDirectoryList) return [];
-
-      const directoryList = dbDirectoryList.map((dir) => {
-        const directory = Directory.restore({
-          id: dir.id,
-          idUser: dir.id_user,
-          directoryName: dir.directory_name,
-          createdAt: dir.created_at,
-          updatedAt: dir.updated_at,
-          isCompleted: dir.is_completed || false,
-          isActive: dir.is_active || true,
-          isTemplate: dir.is_template || false,
-        });
-        return directory;
-      });
-
-      return directoryList;
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) throw error;
-      console.error("Failed to find directories: ", error);
-      throw new DatabaseError("Database error while request directories.");
-    }
-  }
-
-  async listRecentAccess(idUser: string): Promise<Directory[]> {
-    try {
-      const fiveDaysAgo = new Date();
-      const DAYS = 5;
-      fiveDaysAgo.setDate(fiveDaysAgo.getDate() - DAYS);
-      const dbDirectoryList = await this.prismaClient.directory.findMany({
-        where: {
-          id_user: idUser,
-          is_active: true,
-          updated_at: {
-            gte: fiveDaysAgo,
-          },
-        },
-        orderBy: {
-          updated_at: "desc",
-        },
-      });
-
-      if (!dbDirectoryList) return [];
-
-      const directoryList = dbDirectoryList.map((dir) => {
-        const directory = Directory.restore({
-          id: dir.id,
-          idUser: dir.id_user,
-          directoryName: dir.directory_name,
-          createdAt: dir.created_at,
-          updatedAt: dir.updated_at,
-          isCompleted: dir.is_completed || false,
-          isActive: dir.is_active || true,
-          isTemplate: dir.is_template || false,
-        });
-        return directory;
-      });
-
-      return directoryList;
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) throw error;
-      console.error("Failed to find directories: ", error);
-      throw new DatabaseError("Database error while request directories.");
-    }
-  }
-
-  async findById(id: string): Promise<Directory | null> {
-    try {
-      const dbDirectory = await this.prismaClient.directory.findUnique({
+      const dbFlashcard = await this.prismaClient.flashcard.findUnique({
         where: {
           id,
           is_active: true,
         },
       });
+      if (!dbFlashcard) return null;
 
-      if (!dbDirectory) return null;
-
-      const directory = Directory.restore({
-        id: dbDirectory.id,
-        idUser: dbDirectory.id_user,
-        directoryName: dbDirectory.directory_name,
-        createdAt: dbDirectory.created_at,
-        updatedAt: dbDirectory.updated_at,
-        isCompleted: dbDirectory.is_completed || false,
-        isActive: dbDirectory.is_active || true,
-        isTemplate: dbDirectory.is_template || false,
+      const flashcard = Flashcard.restore({
+        id: dbFlashcard.id,
+        topicId: dbFlashcard.id_topic,
+        question: Question.create(dbFlashcard.question),
+        response: Response.create(dbFlashcard.response),
+        createdAt: dbFlashcard.created_at,
+        updatedAt: dbFlashcard.updated_at,
+        completedAt: dbFlashcard.completed_at,
+        isActive: dbFlashcard.is_active || false,
       });
 
-      return directory;
+      return flashcard;
     } catch (error) {
       if (error instanceof EntityNotFoundError) throw error;
-      console.error("Failed to find directory by ID:", error);
-      throw new DatabaseError("Database error while retrieving directory.");
+      console.error("Failed to find flashcard by ID:", error);
+      throw new DatabaseError("Database error while retrieving flashcard.");
     }
   }
 
-  async updateName(id: string, newName: string): Promise<void> {
+  async listAll(idTopic: string): Promise<Flashcard[]> {
     try {
-      await this.prismaClient.directory.update({
-        where: { id },
-        data: { directory_name: newName },
-      });
-    } catch (error) {
-      console.error("Failed to update directory:", error);
-      throw new DatabaseError("Database error while updating directory.");
-    }
-  }
-
-  async deactivate(id: string): Promise<void> {
-    try {
-      const dbDirectory = await this.findById(id);
-
-      if (!dbDirectory) return;
-
-      const journeys = await this.prismaClient.journey.findMany({
-        where: { id_directory: id, is_active: true },
-        include: { topic: true },
-      });
-
-      const journeyIds = journeys.map((j) => j.id);
-      const topicIds = journeys.flatMap((j) => j.topic.map((t) => t.id));
-
-      await this.prismaClient.file_model.updateMany({
-        where: { id_topic: { in: topicIds }, is_active: true },
-        data: { is_active: false },
-      });
-
-      await this.prismaClient.flashcard.updateMany({
-        where: { id_topic: { in: topicIds }, is_active: true },
-        data: { is_active: false },
-      });
-
-      await this.prismaClient.summary.updateMany({
-        where: { id_topic: { in: topicIds }, is_active: true },
-        data: { is_active: false },
-      });
-
-      await this.prismaClient.topic.updateMany({
-        where: { id: { in: topicIds }, is_active: true },
-        data: { is_active: false },
-      });
-
-      await this.prismaClient.progress.updateMany({
-        where: { id_journey: { in: journeyIds }, is_active: true },
-        data: { is_active: false },
-      });
-
-      await this.prismaClient.journey.updateMany({
-        where: { id: { in: journeyIds }, is_active: true },
-        data: { is_active: false },
-      });
-
-      const deactivatedUser = dbDirectory.deactivate();
-
-      await this.prismaClient.directory.update({
+      const dbFlashcardList = await this.prismaClient.flashcard.findMany({
         where: {
-          id: dbDirectory.id,
-        },
-        data: {
-          is_active: deactivatedUser.isActive,
+          id_topic: idTopic,
+          is_active: true,
         },
       });
+
+      if (!dbFlashcardList) return [];
+
+      const flashcardList = dbFlashcardList.map((card) => {
+        const flashcard = Flashcard.restore({
+          id: card.id,
+          topicId: card.id_topic,
+          question: Question.create(card.question),
+          response: Response.create(card.response),
+          createdAt: card.created_at,
+          updatedAt: card.updated_at,
+          completedAt: card.completed_at,
+          isActive: card.is_active || false,
+        });
+        return flashcard;
+      });
+
+      return flashcardList;
     } catch (error) {
-      console.error("Failed to deactivate directory:", error);
-      throw new DatabaseError("Database error while deactivating directory.");
+      if (error instanceof EntityNotFoundError) throw error;
+      console.error("Failed to find flashcards: ", error);
+      throw new DatabaseError("Database error while request flashcards.");
     }
   }
 
-  async complete(id: string): Promise<void> {
-    try {
-      const dbDirectory = await this.findById(id);
-
-      if (!dbDirectory) return;
-
-      const completedDirectory = dbDirectory.complete();
-
-      await this.prismaClient.directory.update({
-        where: {
-          id: dbDirectory.id,
-        },
-        data: {
-          is_completed: completedDirectory.isCompleted,
-        },
-      });
-    } catch (error) {
-      console.error("Failed to complete directory:", error);
-      throw new DatabaseError("Database error while completing directory.");
-    }
+  deactivate(id: string): Promise<void> {
+    
   }
+ 
+  // async updateName(id: string, newName: string): Promise<void> {
+  //   try {
+  //     await this.prismaClient.directory.update({
+  //       where: { id },
+  //       data: { directory_name: newName },
+  //     });
+  //   } catch (error) {
+  //     console.error("Failed to update directory:", error);
+  //     throw new DatabaseError("Database error while updating directory.");
+  //   }
+  // }
 
-  async updateDateOfAccess(id: string): Promise<void> {
-    try {
-      const dbDirectory = await this.findById(id);
+  // async deactivate(id: string): Promise<void> {
+  //   try {
+  //     const dbDirectory = await this.findById(id);
 
-      if (!dbDirectory) return;
+  //     if (!dbDirectory) return;
 
-      const updatedDirectory = dbDirectory.updateDateOfAccess();
+  //     const journeys = await this.prismaClient.journey.findMany({
+  //       where: { id_directory: id, is_active: true },
+  //       include: { topic: true },
+  //     });
 
-      await this.prismaClient.directory.update({
-        where: {
-          id: dbDirectory.id,
-        },
-        data: {
-          updated_at: updatedDirectory.updatedAt,
-        },
-      });
-    } catch (error) {
-      console.error("Failed to update date of the directory:", error);
-      throw new DatabaseError(
-        "Database error while update date of the directory."
-      );
-    }
-  }
+  //     const journeyIds = journeys.map((j) => j.id);
+  //     const topicIds = journeys.flatMap((j) => j.topic.map((t) => t.id));
+
+  //     await this.prismaClient.file_model.updateMany({
+  //       where: { id_topic: { in: topicIds }, is_active: true },
+  //       data: { is_active: false },
+  //     });
+
+  //     await this.prismaClient.flashcard.updateMany({
+  //       where: { id_topic: { in: topicIds }, is_active: true },
+  //       data: { is_active: false },
+  //     });
+
+  //     await this.prismaClient.summary.updateMany({
+  //       where: { id_topic: { in: topicIds }, is_active: true },
+  //       data: { is_active: false },
+  //     });
+
+  //     await this.prismaClient.topic.updateMany({
+  //       where: { id: { in: topicIds }, is_active: true },
+  //       data: { is_active: false },
+  //     });
+
+  //     await this.prismaClient.progress.updateMany({
+  //       where: { id_journey: { in: journeyIds }, is_active: true },
+  //       data: { is_active: false },
+  //     });
+
+  //     await this.prismaClient.journey.updateMany({
+  //       where: { id: { in: journeyIds }, is_active: true },
+  //       data: { is_active: false },
+  //     });
+
+  //     const deactivatedUser = dbDirectory.deactivate();
+
+  //     await this.prismaClient.directory.update({
+  //       where: {
+  //         id: dbDirectory.id,
+  //       },
+  //       data: {
+  //         is_active: deactivatedUser.isActive,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.error("Failed to deactivate directory:", error);
+  //     throw new DatabaseError("Database error while deactivating directory.");
+  //   }
+  // }
 }
