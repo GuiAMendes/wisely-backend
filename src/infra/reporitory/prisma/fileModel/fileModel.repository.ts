@@ -78,7 +78,7 @@ export class FileModelRepositoryPrisma implements FileModelGateway {
 
       const deactivateFile = dbFile.deactivate();
 
-      await this.prismaClient.topic.update({
+      await this.prismaClient.file_model.update({
         where: {
           id: dbFile.id,
         },
