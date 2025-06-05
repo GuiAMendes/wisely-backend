@@ -28,7 +28,6 @@ export class FileModelRepositoryPrisma implements FileModelGateway {
       file_name: fileModel.fileName,
       file_path: fileModel.props.filePath.encoded,
       file_type: fileModel.fileType,
-      upload_date: fileModel.uploadDate,
       is_active: fileModel.isActive || false,
     };
     try {
