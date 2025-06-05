@@ -11,6 +11,8 @@ import { CreateFlashcardUseCase } from "../application/use-cases/flashcard/creat
 
 import { ListAllFlashcardsController } from "../presentation/controllers/express/flashcard/listAll/ListAllFiles.controller";
 import { ListAllFlashcardsUseCase } from "../application/use-cases/flashcard/listAll/ListAllFlashcards.usecase";
+import { UpdateQuestionOfFlashcardUseCaseController } from "../presentation/controllers/express/flashcard/updateQuestion/UpdateQuestionOfFlashcard.controller";
+import { UpdateQuestionOfFlashcardUseCase } from "../application/use-cases/flashcard/updateQuestion/UpdateQuestionOfFlashcard.usecase";
 
 export function createFlashcardControllers() {
   const flashcardRepository = FlashcardRepositoryPrisma.with(prisma);
@@ -25,5 +27,10 @@ export function createFlashcardControllers() {
     jwtToken
   );
 
-  return [create, listAll];
+  const updateQuestion = UpdateQuestionOfFlashcardUseCaseController.create(
+    UpdateQuestionOfFlashcardUseCase.create(flashcardRepository),
+    jwtToken
+  );
+
+  return [create, listAll, updateQuestion];
 }
