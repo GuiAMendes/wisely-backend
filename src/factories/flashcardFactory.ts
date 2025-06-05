@@ -9,6 +9,9 @@ import { FlashcardRepositoryPrisma } from "../infra/reporitory/prisma/flashcard/
 import { CreateFlashcardController } from "../presentation/controllers/express/flashcard/create/CreateFlashcard.controller";
 import { CreateFlashcardUseCase } from "../application/use-cases/flashcard/create/CreateFlashcard.usecase";
 
+import { ListAllFlashcardsController } from "../presentation/controllers/express/flashcard/listAll/ListAllFiles.controller";
+import { ListAllFlashcardsUseCase } from "../application/use-cases/flashcard/listAll/ListAllFlashcards.usecase";
+
 export function createFlashcardControllers() {
   const flashcardRepository = FlashcardRepositoryPrisma.with(prisma);
 
@@ -17,5 +20,10 @@ export function createFlashcardControllers() {
     jwtToken
   );
 
-  return [create];
+  const listAll = ListAllFlashcardsController.create(
+    ListAllFlashcardsUseCase.create(flashcardRepository),
+    jwtToken
+  );
+
+  return [create, listAll];
 }
