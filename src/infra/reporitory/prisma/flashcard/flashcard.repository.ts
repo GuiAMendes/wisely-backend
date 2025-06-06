@@ -1,5 +1,9 @@
 // Entity
-import { Directory } from "../../../../domain/entity/directory/Directory";
+import { Flashcard } from "../../../../domain/entity/flashcard/Flashcard";
+
+// Value Object
+import { Question } from "../../../../domain/value-object/flashcard/Question";
+import { Response } from "../../../../domain/value-object/flashcard/Response";
 
 // Service
 import { PrismaClient } from "../../../../generated/prisma";
@@ -10,9 +14,6 @@ import type { FlashcardGateway } from "../../../../domain/gateway/flashcard/flas
 //  Errors
 import { DatabaseError } from "../../../../presentation/errors/DatabaseError";
 import { EntityNotFoundError } from "../../../../presentation/errors/EntityNotFoundError";
-import { Flashcard } from "../../../../domain/entity/flashcard/Flashcard";
-import { Question } from "../../../../domain/value-object/flashcard/Question";
-import { Response } from "../../../../domain/value-object/flashcard/Response";
 
 export class FlashcardRepositoryPrisma implements FlashcardGateway {
   private constructor(private readonly prismaClient: PrismaClient) {}
@@ -102,79 +103,50 @@ export class FlashcardRepositoryPrisma implements FlashcardGateway {
     }
   }
 
-  deactivate(id: string): Promise<void> {
-    
+  async deactivate(id: string): Promise<void> {
+    try {
+      const dbFlashcard = await this.findById(id);
+
+      if (!dbFlashcard) return;
+
+      const deactivateFlashcard = dbFlashcard.deactivate();
+
+      await this.prismaClient.flashcard.update({
+        where: {
+          id: dbFlashcard.id,
+        },
+        data: {
+          is_active: deactivateFlashcard.isActive,
+        },
+      });
+    } catch (error) {
+      console.error("Failed to deactivate flashcard:", error);
+      throw new DatabaseError("Database error while deactivating flashcard.");
+    }
   }
  
-  // async updateName(id: string, newName: string): Promise<void> {
-  //   try {
-  //     await this.prismaClient.directory.update({
-  //       where: { id },
-  //       data: { directory_name: newName },
-  //     });
-  //   } catch (error) {
-  //     console.error("Failed to update directory:", error);
-  //     throw new DatabaseError("Database error while updating directory.");
-  //   }
-  // }
+  async updateQuestion(id: string, newQuestion: string): Promise<void> {
+      try {
+        await this.prismaClient.flashcard.update({
+          where: { id },
+          data: { question: newQuestion },
+        });
+      } catch (error) {
+        console.error("Failed to update question of flashcard:", error);
+        throw new DatabaseError("Database error while updating question of flashcard.");
+      }
+  }
 
-  // async deactivate(id: string): Promise<void> {
-  //   try {
-  //     const dbDirectory = await this.findById(id);
+  async updateResponse(id: string, newResponse: string): Promise<void> {
+    try {
+      await this.prismaClient.flashcard.update({
+        where: { id },
+        data: { response: newResponse },
+      });
+    } catch (error) {
+      console.error("Failed to update response of flashcard:", error);
+      throw new DatabaseError("Database error while updating response of flashcard.");
+    }
+  }
 
-  //     if (!dbDirectory) return;
-
-  //     const journeys = await this.prismaClient.journey.findMany({
-  //       where: { id_directory: id, is_active: true },
-  //       include: { topic: true },
-  //     });
-
-  //     const journeyIds = journeys.map((j) => j.id);
-  //     const topicIds = journeys.flatMap((j) => j.topic.map((t) => t.id));
-
-  //     await this.prismaClient.file_model.updateMany({
-  //       where: { id_topic: { in: topicIds }, is_active: true },
-  //       data: { is_active: false },
-  //     });
-
-  //     await this.prismaClient.flashcard.updateMany({
-  //       where: { id_topic: { in: topicIds }, is_active: true },
-  //       data: { is_active: false },
-  //     });
-
-  //     await this.prismaClient.summary.updateMany({
-  //       where: { id_topic: { in: topicIds }, is_active: true },
-  //       data: { is_active: false },
-  //     });
-
-  //     await this.prismaClient.topic.updateMany({
-  //       where: { id: { in: topicIds }, is_active: true },
-  //       data: { is_active: false },
-  //     });
-
-  //     await this.prismaClient.progress.updateMany({
-  //       where: { id_journey: { in: journeyIds }, is_active: true },
-  //       data: { is_active: false },
-  //     });
-
-  //     await this.prismaClient.journey.updateMany({
-  //       where: { id: { in: journeyIds }, is_active: true },
-  //       data: { is_active: false },
-  //     });
-
-  //     const deactivatedUser = dbDirectory.deactivate();
-
-  //     await this.prismaClient.directory.update({
-  //       where: {
-  //         id: dbDirectory.id,
-  //       },
-  //       data: {
-  //         is_active: deactivatedUser.isActive,
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error("Failed to deactivate directory:", error);
-  //     throw new DatabaseError("Database error while deactivating directory.");
-  //   }
-  // }
 }

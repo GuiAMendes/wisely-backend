@@ -45,6 +45,10 @@ export const swaggerSpec = swaggerJSDoc({
         name: "File",
         description: "Gerenciamento de arquivos",
       },
+      {
+        name: "Flashcard",
+        description: "Gerenciamento de flashcards",
+      },
     ],
     components: {
       securitySchemes: {
