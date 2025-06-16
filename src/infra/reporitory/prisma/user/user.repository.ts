@@ -32,6 +32,12 @@ export class UserRepositoryPrisma implements UserGateway {
     };
 
     try {
+      const alreadyExistsEmail = await this.findByEmail(user.email);
+      if (alreadyExistsEmail)
+        throw new DatabaseError(
+          "This and email is already associated with a user"
+        );
+
       await this.prismaClient.user.create({ data: userData });
     } catch (error) {
       console.error("Failed to create user:", error);
@@ -41,7 +47,7 @@ export class UserRepositoryPrisma implements UserGateway {
 
   async findById(id: string): Promise<User | null> {
     try {
-      const dbUser = await this.prismaClient.user.findUnique({
+      const dbUser = await this.prismaClient.user.findFirst({
         where: {
           id,
           is_active: true,
@@ -68,7 +74,7 @@ export class UserRepositoryPrisma implements UserGateway {
 
   async findByEmail(email: string): Promise<User | null> {
     try {
-      const dbUser = await this.prismaClient.user.findUnique({
+      const dbUser = await this.prismaClient.user.findFirst({
         where: {
           email,
           is_active: true,
