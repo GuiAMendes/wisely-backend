@@ -1,1 +1,1 @@
-export const EXPIRES = 300;
+export const EXPIRES = "20m";
