@@ -31,6 +31,24 @@ export class TopicRepositoryPrisma implements TopicGateway {
       await this.prismaClient.topic.create({
         data: topicData,
       });
+
+      const progress = await this.prismaClient.progress.findFirst({
+        where: {
+          id_journey: topicData.id_journey,
+          is_active: true,
+        },
+      });
+
+      if (!progress) return;
+
+      await this.prismaClient.progress.update({
+        data: {
+          total_topics: progress.total_topics + 1,
+        },
+        where: {
+          id_journey: progress.id_journey,
+        },
+      });
     } catch (error) {
       console.error("Failed to create topic:", error);
       throw new DatabaseError("Database error while creating topic.");
