@@ -24,7 +24,6 @@ export class Progress {
   }
 
   public static restore(props: ProgressProps): Progress {
-    ProgressValidator.ensureTotalTopicsValid(props.totalTopics);
     ProgressValidator.ensureCompletedNotExceedsTotal(
       props.completedTopics,
       props.totalTopics

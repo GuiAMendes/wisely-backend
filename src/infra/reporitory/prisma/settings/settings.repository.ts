@@ -35,11 +35,14 @@ export class SettingsRepositoryPrisma implements SettingsGateway {
     newColorSchema: { primaryColor: string; secondaryColor: string }
   ): Promise<void> {
     try {
-      await this.prismaClient.settings.update({
-        where: {
-          id_user: idUser,
+      await this.prismaClient.settings.upsert({
+        where: { id_user: idUser },
+        update: {
+          primaryColor: newColorSchema.primaryColor,
+          secondaryColor: newColorSchema.secondaryColor,
         },
-        data: {
+        create: {
+          id_user: idUser,
           primaryColor: newColorSchema.primaryColor,
           secondaryColor: newColorSchema.secondaryColor,
         },
