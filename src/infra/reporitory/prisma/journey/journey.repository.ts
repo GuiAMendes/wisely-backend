@@ -197,15 +197,15 @@ export class JourneyRepositoryPrisma implements JourneyGateway {
   async deactivate(id: string): Promise<void> {
     try {
       const dbJourney = await this.findById(id);
-
       if (!dbJourney) return;
 
-      const journeys = await this.prismaClient.journey.findMany({
-        where: { id: id, is_active: true },
+      const journeyWithTopics = await this.prismaClient.journey.findUnique({
+        where: { id },
         include: { topic: true },
       });
+      if (!journeyWithTopics) return;
 
-      const topicIds = journeys.flatMap((j) => j.topic.map((t) => t.id));
+      const topicIds = journeyWithTopics.topic.map((t) => t.id);
 
       await this.prismaClient.file_model.updateMany({
         where: { id_topic: { in: topicIds }, is_active: true },
@@ -224,11 +224,6 @@ export class JourneyRepositoryPrisma implements JourneyGateway {
 
       await this.prismaClient.topic.updateMany({
         where: { id: { in: topicIds }, is_active: true },
-        data: { is_active: false },
-      });
-
-      await this.prismaClient.journey.update({
-        where: { id: id, is_active: true },
         data: { is_active: false },
       });
 
