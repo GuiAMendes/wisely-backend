@@ -120,8 +120,6 @@ export class CreateDirectoryController implements Route {
           isTemplate,
         });
 
-        console.log(createdDirectory);
-
         const output = presenter({
           id: createdDirectory.id,
           name: createdDirectory.name,

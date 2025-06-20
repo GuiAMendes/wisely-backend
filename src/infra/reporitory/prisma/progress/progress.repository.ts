@@ -92,7 +92,9 @@ export class ProgressRepositoryPrisma implements ProgressGateway {
         where: {
           is_active: true,
           journey: {
+            is_active: true,
             directory: {
+              is_active: true,
               user: {
                 id: idUser,
               },

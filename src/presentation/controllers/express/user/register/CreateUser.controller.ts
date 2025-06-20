@@ -124,8 +124,6 @@ export class CreateUserController implements Route {
           password,
         });
 
-        console.log(createdUser);
-
         const output = presenter(createdUser);
 
         response.status(201).json(output);
