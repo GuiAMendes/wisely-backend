@@ -14,8 +14,7 @@ export function createSettingsControllers() {
   const settingsRepository = SettingsRepositoryPrisma.with(prisma);
 
   const create = CreateSettingsController.create(
-    CreateSettingsUseCase.create(settingsRepository),
-    jwtToken
+    CreateSettingsUseCase.create(settingsRepository)
   );
 
   const findByUser = FindByUserSettingsController.create(
